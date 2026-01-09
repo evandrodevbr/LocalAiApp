@@ -1,10 +1,15 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
+<<<<<<< HEAD
   "identifier": "main-capability",
+=======
+  "identifier": "default",
+>>>>>>> ce33464 (feat: initialize Tauri application with Preact framework)
   "description": "Capability for the main window",
   "windows": ["main"],
   "permissions": [
     "core:default",
+<<<<<<< HEAD
     "opener:default",
     {
       "identifier": "shell:allow-execute",
@@ -15,5 +20,8 @@
         }
       ]
     }
+=======
+    "opener:default"
+>>>>>>> ce33464 (feat: initialize Tauri application with Preact framework)
   ]
 }

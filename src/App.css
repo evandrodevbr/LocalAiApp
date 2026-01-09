@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 @import "tailwindcss";
 
+=======
+>>>>>>> ce33464 (feat: initialize Tauri application with Preact framework)
 .logo.vite:hover {
   filter: drop-shadow(0 0 2em #747bff);
 }

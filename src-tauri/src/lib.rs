@@ -1,4 +1,5 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+<<<<<<< HEAD
 use tauri_plugin_shell::ShellExt;
 use tauri_plugin_shell::process::CommandEvent;
 use std::sync::{Arc, Mutex};
@@ -7,6 +8,8 @@ struct AppState {
     child_process: Arc<Mutex<Option<tauri_plugin_shell::process::CommandChild>>>,
 }
 
+=======
+>>>>>>> ce33464 (feat: initialize Tauri application with Preact framework)
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
@@ -14,6 +17,7 @@ fn greet(name: &str) -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+<<<<<<< HEAD
     let child_process = Arc::new(Mutex::new(Option::<tauri_plugin_shell::process::CommandChild>::None));
     let child_process_clone = Arc::clone(&child_process);
 
@@ -66,6 +70,11 @@ pub fn run() {
                 println!("[System]: Encerrando Backend...");
             }
         })
+=======
+    tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
+        .invoke_handler(tauri::generate_handler![greet])
+>>>>>>> ce33464 (feat: initialize Tauri application with Preact framework)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

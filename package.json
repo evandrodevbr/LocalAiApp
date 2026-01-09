@@ -4,16 +4,20 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     "dev:ui": "vite",
     "install:python-deps": "node scripts/install-python-deps.js",
     "compile:sidecar": "python compile_sidecar.py",
     "predev": "pnpm install:python-deps && pnpm compile:sidecar",
+=======
+>>>>>>> ce33464 (feat: initialize Tauri application with Preact framework)
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource-variable/open-sans": "^5.2.7",
@@ -36,5 +40,16 @@
     "tailwindcss": "^4.1.18",
     "typescript": "~5.6.2",
     "vite": "^6.0.3"
+=======
+    "preact": "^10.25.1",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.9.3",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.3",
+    "@tauri-apps/cli": "^2"
+>>>>>>> ce33464 (feat: initialize Tauri application with Preact framework)
   }
 }
