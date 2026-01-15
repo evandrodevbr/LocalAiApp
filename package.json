@@ -4,6 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "dev:ui": "vite",
+    "install:python-deps": "node scripts/install-python-deps.js",
+    "compile:sidecar": "python compile_sidecar.py",
+    "predev": "pnpm install:python-deps && pnpm compile:sidecar",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
@@ -27,6 +31,7 @@
     "@tailwindcss/postcss": "^4.1.18",
     "@tauri-apps/cli": "^2",
     "autoprefixer": "^10.4.23",
+    "concurrently": "^9.2.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.6.2",

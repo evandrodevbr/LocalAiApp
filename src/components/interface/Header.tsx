@@ -6,7 +6,7 @@ import { Home, Settings, Cpu, Sparkles } from "lucide-react";
 
 const appName = import.meta.env.VITE_APPNAME || "LocalMind AI";
 
-export default function Header() {
+export default function Header({ onSettingsClick }: { onSettingsClick?: () => void }) {
   // Simulando um estado da IA (você conectaria isso ao seu backend real depois)
   const isModelLoaded = true;
 
@@ -85,6 +85,7 @@ export default function Header() {
           <IconButton
             variant="plain"
             color="neutral"
+            onClick={onSettingsClick}
             sx={{
                 color: '#94a3b8',
                 '&:hover': { color: 'white', backgroundColor: 'rgba(255,255,255, 0.05)' }

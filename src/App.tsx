@@ -1,5 +1,5 @@
 import "@fontsource/inter";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Sheet, Box, Textarea, IconButton, Tooltip, Typography, 
   Menu, MenuItem, Dropdown, MenuButton, Badge
@@ -13,9 +13,22 @@ import {
 // Componentes de Interface Padronizados
 import Header from "./components/interface/Header";
 import Footer from "./components/interface/Footer";
+import { SettingsModal } from "./components/interface/SettingsModal";
+
+const API_BASE = "http://127.0.0.1:8000";
 
 export default function App() {
   const [selectedModel, setSelectedModel] = useState("Llama-3.1-8B");
+  const [stats, setStats] = useState({
+    cpu: 0,
+    ram_used: 0,
+    ram_total: 8,
+    gpu: { usage: 0, vram_used: 0, vram_total: 0 },
+    disk_free_gb: 0
+  });
+  const [models, setModels] = useState<any[]>([]);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [downloadingModel, setDownloadingModel] = useState<string | null>(null);
 
   // Constantes de Design (Tokens)
   const ICON_SIZE = 18;
@@ -23,9 +36,98 @@ export default function App() {
   const BORDER_STYLE = "border-white/[0.06]";
   const SURFACE_COLOR = "bg-[#121212]";
 
+  // Polling de telemetria
+  useEffect(() => {
+    const fetchTelemetry = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/api/telemetry`);
+        const data = await response.json();
+        setStats(data);
+      } catch (error) {
+        console.error("Erro ao buscar telemetria:", error);
+      }
+    };
+
+    fetchTelemetry();
+    const interval = setInterval(fetchTelemetry, 2000); // Atualiza a cada 2s
+    return () => clearInterval(interval);
+  }, []);
+
+  // Carregar modelos
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/api/models`);
+        const data = await response.json();
+        setModels(data.models || []);
+      } catch (error) {
+        console.error("Erro ao carregar modelos:", error);
+      }
+    };
+
+    fetchModels();
+  }, []);
+
+  // Função de download com EventSource
+  const handleDownload = async (model: any) => {
+    if (downloadingModel) return;
+    
+    setDownloadingModel(model.id);
+    
+    try {
+      const response = await fetch(`${API_BASE}/api/models/download`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model_id: model.id,
+          repo_id: model.repo,
+          filename: model.filename
+        })
+      });
+
+      if (!response.ok) throw new Error("Falha ao iniciar download");
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (!reader) throw new Error("Stream não disponível");
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n");
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = JSON.parse(line.slice(6));
+            
+            if (data.type === "complete") {
+              setDownloadingModel(null);
+              // Recarrega lista de modelos
+              const res = await fetch(`${API_BASE}/api/models`);
+              const modelsData = await res.json();
+              setModels(modelsData.models || []);
+              break;
+            } else if (data.type === "error") {
+              setDownloadingModel(null);
+              console.error("Erro no download:", data.message);
+              break;
+            }
+            // Progresso pode ser usado para atualizar UI se necessário
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Erro no download:", error);
+      setDownloadingModel(null);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-[#0A0A0A] text-slate-200 overflow-hidden font-inter selection:bg-cyan-500/30">
-      <Header />
+      <Header onSettingsClick={() => setSettingsOpen(true)} />
 
       <main className="flex flex-1 overflow-hidden border-t border-white/[0.05]">
         
@@ -182,7 +284,13 @@ export default function App() {
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer stats={stats} />
+      <SettingsModal 
+        open={settingsOpen} 
+        onClose={() => setSettingsOpen(false)} 
+        models={models}
+        onDownload={handleDownload}
+      />
     </div>
   );
 }
