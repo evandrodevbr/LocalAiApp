@@ -1,14 +1,17 @@
+import { useThemeColor } from '@/hooks/useThemeColor';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export function TypingIndicator() {
+    const colors = useThemeColor();
+
     return (
         <View style={styles.container}>
-            <View style={styles.bubble}>
+            <View style={[styles.bubble, { backgroundColor: colors.messageAssistantBg }]}>
                 <View style={styles.dotsRow}>
-                    <View style={[styles.dot, styles.dot1]} />
-                    <View style={[styles.dot, styles.dot2]} />
-                    <View style={[styles.dot, styles.dot3]} />
+                    <View style={[styles.dot, styles.dot1, { backgroundColor: colors.textMuted }]} />
+                    <View style={[styles.dot, styles.dot2, { backgroundColor: colors.textMuted }]} />
+                    <View style={[styles.dot, styles.dot3, { backgroundColor: colors.textMuted }]} />
                 </View>
             </View>
         </View>
@@ -24,7 +27,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     bubble: {
-        backgroundColor: '#F3F4F6',
         borderRadius: 20,
         borderTopLeftRadius: 4,
         paddingHorizontal: 16,
@@ -39,7 +41,6 @@ const styles = StyleSheet.create({
         width: 8,
         height: 8,
         borderRadius: 4,
-        backgroundColor: '#9CA3AF',
         opacity: 0.6,
     },
     dot1: { opacity: 1.0 },

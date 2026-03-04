@@ -2,10 +2,12 @@ import { ChatInput } from '@/components/chat/ChatInput';
 import { MessageBubble } from '@/components/chat/MessageBubble';
 import { TypingIndicator } from '@/components/chat/TypingIndicator';
 import { useLMStudio } from '@/hooks/useLMStudio';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { useAppStore } from '@/store/useAppStore';
 import { MessageSquare, Sparkles } from 'lucide-react-native';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const PROMPT_SUGGESTIONS = [
     'Explain recursion in simple terms',
@@ -15,6 +17,7 @@ const PROMPT_SUGGESTIONS = [
 ];
 
 export default function ChatScreen() {
+    const colors = useThemeColor(); // Dynamic theme
     const messages = useAppStore(state => state.messages);
     const editingMessageId = useAppStore(state => state.editingMessageId);
     const setEditingMessageId = useAppStore(state => state.setEditingMessageId);
@@ -31,18 +34,20 @@ export default function ChatScreen() {
 
     const handleSend = useCallback((text: string) => {
         if (editingMessageId && editingMessage) {
-            // Edit mode: update message, delete all after, and resend
             editMessage(editingMessageId, text);
-            // Get updated messages, delete everything after the edited message
             deleteMessagesAfter(editingMessageId);
             setEditingMessageId(null);
 
-            // Now send the edited message for a new response
-            // Small delay to allow state update
             setTimeout(() => {
                 const store = useAppStore.getState();
                 const msgs = store.messages;
-                const apiMsgs = msgs.map(m => ({ role: m.role, content: m.content }));
+                // Add system prompt before mapped messages
+                const { SYSTEM_PROMPT } = require('@/constants/SystemPrompt');
+                const apiMsgs = [
+                    { role: 'system', content: SYSTEM_PROMPT },
+                    ...msgs.map(m => ({ role: m.role, content: m.content }))
+                ];
+
                 const modelId = store.activeModelId;
                 if (!modelId) return;
 
@@ -67,33 +72,22 @@ export default function ChatScreen() {
         }
     }, [editingMessageId, editingMessage, editMessage, deleteMessagesAfter, setEditingMessageId, sendMessage]);
 
-    const handleEdit = useCallback((id: string) => {
-        setEditingMessageId(id);
-    }, [setEditingMessageId]);
+    const handleEdit = useCallback((id: string) => setEditingMessageId(id), [setEditingMessageId]);
+    const handleCancelEdit = useCallback(() => setEditingMessageId(null), [setEditingMessageId]);
+    const handleDelete = useCallback((id: string) => deleteMessage(id), [deleteMessage]);
 
-    const handleCancelEdit = useCallback(() => {
-        setEditingMessageId(null);
-    }, [setEditingMessageId]);
-
-    const handleDelete = useCallback((id: string) => {
-        deleteMessage(id);
-    }, [deleteMessage]);
-
-    // Find the last assistant message id
     const lastAssistantId = messages.length > 0
         ? [...messages].reverse().find(m => m.role === 'assistant')?.id
         : null;
 
-    // Auto-scroll
     useEffect(() => {
         if (messages.length > 0 && flatListRef.current) {
             setTimeout(() => {
-                flatListRef.current?.scrollToEnd({ animated: true });
+                flatListRef.current?.scrollToEnd({ animated: !isStreaming });
             }, 100);
         }
-    }, [messages.length, messages[messages.length - 1]?.content?.length]);
+    }, [messages.length, messages[messages.length - 1]?.content?.length, isStreaming]);
 
-    // Show typing indicator when streaming and last assistant message is empty
     const showTypingIndicator = isStreaming &&
         messages.length > 0 &&
         messages[messages.length - 1]?.role === 'assistant' &&
@@ -101,25 +95,25 @@ export default function ChatScreen() {
 
     return (
         <KeyboardAvoidingView
-            style={styles.container}
+            style={[styles.container, { backgroundColor: colors.backgroundColor }]}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
         >
             {!isConnected && (
-                <View style={styles.banner}>
-                    <Text style={styles.bannerText}>
-                        ⚠️ Not connected to LM Studio. Check Settings → Server Connection.
+                <View style={[styles.banner, { backgroundColor: colors.bannerBg, borderBottomColor: colors.bannerBg }]}>
+                    <Text style={[styles.bannerText, { color: colors.bannerText }]}>
+                        ⚠️ Server offline. Check Settings → Server Connection.
                     </Text>
                 </View>
             )}
 
             {messages.length === 0 ? (
-                <View style={styles.emptyState}>
-                    <View style={styles.emptyIconWrap}>
-                        <MessageSquare size={40} color="#D1D5DB" />
+                <View style={[styles.emptyState, { backgroundColor: colors.backgroundColor }]}>
+                    <View style={[styles.emptyIconWrap, { backgroundColor: colors.cardBackground, shadowColor: colors.shadow }]}>
+                        <MessageSquare size={40} color={colors.textMuted} />
                     </View>
-                    <Text style={styles.emptyTitle}>Start a conversation</Text>
-                    <Text style={styles.emptySubtitle}>
+                    <Text style={[styles.emptyTitle, { color: colors.text }]}>Start a conversation</Text>
+                    <Text style={[styles.emptySubtitle, { color: colors.textMuted }]}>
                         Send a message to begin chatting with your local AI model.
                     </Text>
 
@@ -127,12 +121,12 @@ export default function ChatScreen() {
                         {PROMPT_SUGGESTIONS.map((prompt, i) => (
                             <TouchableOpacity
                                 key={i}
-                                style={styles.suggestionChip}
+                                style={[styles.suggestionChip, { backgroundColor: colors.cardBackground, borderColor: colors.border }]}
                                 onPress={() => sendMessage(prompt)}
                                 activeOpacity={0.7}
                             >
-                                <Sparkles size={14} color="#6B7280" />
-                                <Text style={styles.suggestionText} numberOfLines={1}>{prompt}</Text>
+                                <Sparkles size={14} color={colors.textMuted} />
+                                <Text style={[styles.suggestionText, { color: colors.text }]} numberOfLines={1}>{prompt}</Text>
                             </TouchableOpacity>
                         ))}
                     </View>
@@ -143,15 +137,17 @@ export default function ChatScreen() {
                         ref={flatListRef}
                         data={messages}
                         keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => (
-                            <MessageBubble
-                                message={item}
-                                onEdit={() => handleEdit(item.id)}
-                                onRegenerate={regenerateResponse}
-                                onDelete={() => handleDelete(item.id)}
-                                isStreaming={isStreaming}
-                                isLastAssistant={item.id === lastAssistantId}
-                            />
+                        renderItem={({ item, index }) => (
+                            <Animated.View entering={FadeInDown.duration(300).delay(index > messages.length - 4 ? 100 : 0)}>
+                                <MessageBubble
+                                    message={item}
+                                    onEdit={() => handleEdit(item.id)}
+                                    onRegenerate={regenerateResponse}
+                                    onDelete={() => handleDelete(item.id)}
+                                    isStreaming={isStreaming}
+                                    isLastAssistant={item.id === lastAssistantId}
+                                />
+                            </Animated.View>
                         )}
                         contentContainerStyle={styles.listContent}
                     />
@@ -173,23 +169,20 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
     },
     listContent: {
-        paddingTop: 8,
-        paddingBottom: 16,
+        paddingTop: 16,
+        paddingBottom: 24,
     },
     banner: {
-        backgroundColor: '#FEF3C7',
         paddingHorizontal: 16,
         paddingVertical: 10,
         borderBottomWidth: 1,
-        borderBottomColor: '#FDE68A',
     },
     bannerText: {
         fontSize: 13,
-        color: '#92400E',
         textAlign: 'center',
+        fontWeight: '500',
     },
     emptyState: {
         flex: 1,
@@ -199,46 +192,45 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
     },
     emptyIconWrap: {
-        width: 72,
-        height: 72,
-        borderRadius: 36,
-        backgroundColor: '#F3F4F6',
+        width: 80,
+        height: 80,
+        borderRadius: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 16,
+        marginBottom: 20,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+        elevation: 2,
     },
     emptyTitle: {
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: '700',
-        color: '#111827',
         marginBottom: 8,
     },
     emptySubtitle: {
         fontSize: 15,
-        color: '#6B7280',
         textAlign: 'center',
         lineHeight: 22,
-        marginBottom: 28,
+        marginBottom: 32,
     },
     suggestionsWrap: {
         width: '100%',
         maxWidth: 400,
-        gap: 8,
+        gap: 12,
     },
     suggestionChip: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 10,
-        backgroundColor: '#F9FAFB',
+        gap: 12,
         borderWidth: 1,
-        borderColor: '#E5E7EB',
-        borderRadius: 12,
+        borderRadius: 16,
         paddingHorizontal: 16,
         paddingVertical: 14,
     },
     suggestionText: {
-        fontSize: 14,
-        color: '#374151',
+        fontSize: 15,
         flex: 1,
+        fontWeight: '500',
     },
 });

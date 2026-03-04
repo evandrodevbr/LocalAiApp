@@ -1,3 +1,4 @@
+import { useThemeColor } from '@/hooks/useThemeColor';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -7,11 +8,19 @@ interface ConnectionBadgeProps {
 }
 
 export function ConnectionBadge({ isConnected, compact }: ConnectionBadgeProps) {
+    const colors = useThemeColor();
+
     return (
         <View style={styles.container}>
-            <View style={[styles.dot, isConnected ? styles.dotConnected : styles.dotDisconnected]} />
+            <View style={[
+                styles.dot,
+                { backgroundColor: isConnected ? colors.successText : colors.errorText }
+            ]} />
             {!compact && (
-                <Text style={[styles.text, isConnected ? styles.textConnected : styles.textDisconnected]}>
+                <Text style={[
+                    styles.text,
+                    { color: isConnected ? colors.successText : colors.errorText }
+                ]}>
                     {isConnected ? 'Connected' : 'Disconnected'}
                 </Text>
             )}
@@ -30,20 +39,8 @@ const styles = StyleSheet.create({
         height: 8,
         borderRadius: 4,
     },
-    dotConnected: {
-        backgroundColor: '#22C55E',
-    },
-    dotDisconnected: {
-        backgroundColor: '#EF4444',
-    },
     text: {
         fontSize: 12,
         fontWeight: '500',
-    },
-    textConnected: {
-        color: '#22C55E',
-    },
-    textDisconnected: {
-        color: '#EF4444',
     },
 });

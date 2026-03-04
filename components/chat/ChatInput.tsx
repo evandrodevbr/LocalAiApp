@@ -1,3 +1,4 @@
+import { useThemeColor } from '@/hooks/useThemeColor';
 import * as Haptics from 'expo-haptics';
 import { Send, Square, X } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
@@ -20,6 +21,7 @@ interface ChatInputProps {
 
 export function ChatInput({ onSend, onStop, isLoading, editingText, onCancelEdit }: ChatInputProps) {
     const [text, setText] = useState('');
+    const colors = useThemeColor();
 
     // When editingText changes, fill the input
     useEffect(() => {
@@ -58,23 +60,27 @@ export function ChatInput({ onSend, onStop, isLoading, editingText, onCancelEdit
     const isEditing = editingText !== null && editingText !== undefined;
 
     return (
-        <View style={styles.outerContainer}>
+        <View style={[styles.outerContainer, { backgroundColor: colors.backgroundColor, borderTopColor: colors.border }]}>
             {/* Edit mode banner */}
             {isEditing && (
-                <View style={styles.editBanner}>
-                    <Text style={styles.editBannerText}>Editing message</Text>
+                <View style={[styles.editBanner, { backgroundColor: colors.bannerBg, borderBottomColor: colors.border }]}>
+                    <Text style={[styles.editBannerText, { color: colors.bannerText }]}>Editing message</Text>
                     <TouchableOpacity onPress={handleCancelEdit} style={styles.editCancelBtn}>
-                        <X size={16} color="#6B7280" />
+                        <X size={16} color={colors.textMuted} />
                     </TouchableOpacity>
                 </View>
             )}
 
             <View style={styles.container}>
-                <View style={[styles.inputWrapper, isEditing && styles.inputWrapperEditing]}>
+                <View style={[
+                    styles.inputWrapper,
+                    { backgroundColor: colors.inputBg, borderColor: colors.border, borderWidth: 1 },
+                    isEditing && { borderColor: colors.tint, borderWidth: 1.5 }
+                ]}>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { color: colors.text }]}
                         placeholder="Send a message..."
-                        placeholderTextColor="#9CA3AF"
+                        placeholderTextColor={colors.textMuted}
                         value={text}
                         onChangeText={setText}
                         multiline
@@ -85,20 +91,23 @@ export function ChatInput({ onSend, onStop, isLoading, editingText, onCancelEdit
                     {/* Send or Stop button */}
                     {isLoading ? (
                         <TouchableOpacity
-                            style={styles.stopButton}
+                            style={[styles.stopButton, { backgroundColor: colors.errorText }]}
                             onPress={handleStop}
                             activeOpacity={0.7}
                         >
-                            <Square size={16} color="#FFFFFF" />
+                            <Square size={16} color={colors.backgroundColor} />
                         </TouchableOpacity>
                     ) : (
                         <TouchableOpacity
-                            style={[styles.sendButton, !text.trim() && styles.sendButtonDisabled]}
+                            style={[
+                                styles.sendButton,
+                                { backgroundColor: text.trim() ? colors.tint : colors.border }
+                            ]}
                             onPress={handleSend}
                             disabled={!text.trim()}
                             activeOpacity={0.7}
                         >
-                            <Send size={18} color={text.trim() ? '#FFFFFF' : '#9CA3AF'} />
+                            <Send size={18} color={text.trim() ? colors.backgroundColor : colors.textMuted} />
                         </TouchableOpacity>
                     )}
                 </View>
@@ -109,9 +118,7 @@ export function ChatInput({ onSend, onStop, isLoading, editingText, onCancelEdit
 
 const styles = StyleSheet.create({
     outerContainer: {
-        backgroundColor: '#FFFFFF',
         borderTopWidth: 1,
-        borderTopColor: '#E5E7EB',
     },
     editBanner: {
         flexDirection: 'row',
@@ -119,13 +126,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 16,
         paddingVertical: 8,
-        backgroundColor: '#EFF6FF',
         borderBottomWidth: 1,
-        borderBottomColor: '#DBEAFE',
     },
     editBannerText: {
         fontSize: 13,
-        color: '#2563EB',
         fontWeight: '500',
     },
     editCancelBtn: {
@@ -138,16 +142,11 @@ const styles = StyleSheet.create({
     inputWrapper: {
         flexDirection: 'row',
         alignItems: 'flex-end',
-        backgroundColor: '#F3F4F6',
         borderRadius: 24,
         paddingHorizontal: 16,
         paddingVertical: 6,
         minHeight: 44,
         maxHeight: 120,
-    },
-    inputWrapperEditing: {
-        borderWidth: 1.5,
-        borderColor: '#2563EB',
     },
     input: {
         flex: 1,
@@ -155,26 +154,20 @@ const styles = StyleSheet.create({
         lineHeight: 22,
         paddingTop: 8,
         paddingBottom: 8,
-        color: '#111827',
     },
     sendButton: {
         width: 34,
         height: 34,
         borderRadius: 17,
-        backgroundColor: '#111827',
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: 8,
         marginBottom: 2,
     },
-    sendButtonDisabled: {
-        backgroundColor: '#E5E7EB',
-    },
     stopButton: {
         width: 34,
         height: 34,
         borderRadius: 17,
-        backgroundColor: '#EF4444',
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: 8,

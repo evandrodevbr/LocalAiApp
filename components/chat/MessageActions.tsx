@@ -1,3 +1,4 @@
+import { useThemeColor } from '@/hooks/useThemeColor';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import { Copy, Pencil, RefreshCw, Trash2 } from 'lucide-react-native';
@@ -21,6 +22,8 @@ export function MessageActions({
     onDelete,
     isStreaming,
 }: MessageActionsProps) {
+    const colors = useThemeColor();
+
     const handleCopy = async () => {
         await Clipboard.setStringAsync(content);
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -48,24 +51,24 @@ export function MessageActions({
     return (
         <View style={[styles.container, isUser ? styles.containerUser : styles.containerAssistant]}>
             <TouchableOpacity style={styles.actionBtn} onPress={handleCopy} activeOpacity={0.6}>
-                <Copy size={14} color="#9CA3AF" />
+                <Copy size={16} color={colors.textMuted} />
             </TouchableOpacity>
 
             {isUser && onEdit && (
                 <TouchableOpacity style={styles.actionBtn} onPress={handleEdit} activeOpacity={0.6}>
-                    <Pencil size={14} color="#9CA3AF" />
+                    <Pencil size={16} color={colors.textMuted} />
                 </TouchableOpacity>
             )}
 
             {!isUser && onRegenerate && (
                 <TouchableOpacity style={styles.actionBtn} onPress={handleRegenerate} activeOpacity={0.6}>
-                    <RefreshCw size={14} color="#9CA3AF" />
+                    <RefreshCw size={16} color={colors.textMuted} />
                 </TouchableOpacity>
             )}
 
             {onDelete && (
                 <TouchableOpacity style={styles.actionBtn} onPress={handleDelete} activeOpacity={0.6}>
-                    <Trash2 size={14} color="#9CA3AF" />
+                    <Trash2 size={16} color={colors.textMuted} />
                 </TouchableOpacity>
             )}
         </View>
@@ -75,8 +78,8 @@ export function MessageActions({
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        gap: 2,
-        marginTop: 4,
+        gap: 6,
+        marginTop: 6,
         paddingHorizontal: 16,
     },
     containerUser: {
@@ -86,9 +89,9 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     actionBtn: {
-        width: 32,
-        height: 32,
-        borderRadius: 8,
+        width: 36,
+        height: 36,
+        borderRadius: 18,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'transparent',

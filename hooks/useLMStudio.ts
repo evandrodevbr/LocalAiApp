@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import { SYSTEM_PROMPT } from '../constants/SystemPrompt';
 import * as api from '../services/lmStudioApi';
 import { ChatMessage as ApiMessage } from '../services/types';
 import { useAppStore } from '../store/useAppStore';
@@ -48,10 +49,13 @@ export function useLMStudio() {
         addMessage({ role: 'user', content: text });
 
         const currentMessages = useAppStore.getState().messages;
-        const apiMessages: ApiMessage[] = currentMessages.map((m) => ({
-            role: m.role,
-            content: m.content,
-        }));
+        const apiMessages: ApiMessage[] = [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...currentMessages.map((m) => ({
+                role: m.role,
+                content: m.content,
+            }))
+        ];
 
         const modelId = useAppStore.getState().activeModelId;
         if (!modelId) {
@@ -112,10 +116,13 @@ export function useLMStudio() {
 
         // Build API messages from remaining
         const remaining = useAppStore.getState().messages;
-        const apiMessages: ApiMessage[] = remaining.map((m) => ({
-            role: m.role,
-            content: m.content,
-        }));
+        const apiMessages: ApiMessage[] = [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...remaining.map((m) => ({
+                role: m.role,
+                content: m.content,
+            }))
+        ];
 
         const modelId = useAppStore.getState().activeModelId;
         if (!modelId) return;

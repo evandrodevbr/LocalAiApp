@@ -1,7 +1,9 @@
 import { ConnectionBadge } from '@/components/ui/ConnectionBadge';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import * as api from '@/services/lmStudioApi';
 import { ServerConfig } from '@/services/types';
 import { useAppStore } from '@/store/useAppStore';
+import { Info, MonitorCog, Moon, Network } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
     ActivityIndicator,
@@ -12,28 +14,31 @@ import {
     TextInput,
     TouchableOpacity,
     useWindowDimensions,
-    View
+    View,
 } from 'react-native';
 
 export default function SettingsScreen() {
     const { width } = useWindowDimensions();
-    const theme = useAppStore(state => state.theme);
+    const colors = useThemeColor(); // Get current theme colors
+
+    // Global State
+    const themePreference = useAppStore(state => state.theme);
     const setTheme = useAppStore(state => state.setTheme);
     const serverConfig = useAppStore(state => state.serverConfig);
     const setServerConfig = useAppStore(state => state.setServerConfig);
     const isConnected = useAppStore(state => state.isConnected);
     const setIsConnected = useAppStore(state => state.setIsConnected);
 
+    // Local State
     const [host, setHost] = useState(serverConfig.host);
     const [port, setPort] = useState(serverConfig.port.toString());
     const [apiKey, setApiKey] = useState(serverConfig.apiKey ?? '');
     const [isTesting, setIsTesting] = useState(false);
     const [testResult, setTestResult] = useState<boolean | null>(null);
 
-    const isDarkMode = theme === 'dark' || theme === 'system';
-    const toggleTheme = () => setTheme(isDarkMode ? 'light' : 'dark');
-
     const isLargeScreen = width > 768;
+    const isDarkMode = themePreference === 'dark' || (themePreference === 'system' && colors.backgroundColor === '#020617'); // Hacky check but robust given our Colors.ts
+    const toggleTheme = () => setTheme(isDarkMode ? 'light' : 'dark');
 
     const currentConfig: ServerConfig = {
         host: host.trim() || 'localhost',
@@ -64,113 +69,156 @@ export default function SettingsScreen() {
 
     return (
         <ScrollView
-            style={styles.container}
+            style={[styles.container, { backgroundColor: colors.backgroundColor }]}
             contentContainerStyle={[
                 styles.scrollContent,
                 isLargeScreen && styles.desktopContent,
             ]}
         >
-            {/* Server Connection */}
-            <View style={[styles.card, isLargeScreen && styles.desktopCard]}>
-                <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>Server Connection</Text>
-                    <ConnectionBadge isConnected={isConnected} />
-                </View>
+            {/* Server Connection Section */}
+            <View style={[styles.section, isLargeScreen && styles.desktopSection]}>
+                <Text style={[styles.sectionLabel, { color: colors.textMuted }]}>SERVER CONNECTION</Text>
 
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Host</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        value={host}
-                        onChangeText={setHost}
-                        placeholder="localhost"
-                        placeholderTextColor="#9CA3AF"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                    />
-                </View>
+                <View style={[styles.card, { backgroundColor: colors.cardBackground, borderColor: colors.border }]}>
+                    <View style={styles.cardHeader}>
+                        <View style={styles.cardHeaderTitle}>
+                            <Network size={20} color={colors.text} style={styles.headerIcon} />
+                            <Text style={[styles.cardTitle, { color: colors.text }]}>LM Studio API</Text>
+                        </View>
+                        <ConnectionBadge isConnected={isConnected} />
+                    </View>
 
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Port</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        value={port}
-                        onChangeText={setPort}
-                        placeholder="1234"
-                        placeholderTextColor="#9CA3AF"
-                        keyboardType="numeric"
-                    />
-                </View>
+                    <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>API Key (optional)</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        value={apiKey}
-                        onChangeText={setApiKey}
-                        placeholder="Leave empty for local"
-                        placeholderTextColor="#9CA3AF"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        secureTextEntry
-                    />
-                </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={[styles.label, { color: colors.textMuted }]}>Host IP / Address</Text>
+                        <TextInput
+                            style={[
+                                styles.textInput,
+                                { backgroundColor: colors.inputBg, borderColor: colors.inputBorder, color: colors.text }
+                            ]}
+                            value={host}
+                            onChangeText={setHost}
+                            placeholder="localhost"
+                            placeholderTextColor={colors.textMuted}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                        />
+                    </View>
 
-                <View style={styles.buttonRow}>
-                    {configChanged && (
-                        <TouchableOpacity style={styles.saveButton} onPress={handleSaveConfig}>
-                            <Text style={styles.saveButtonText}>Save</Text>
-                        </TouchableOpacity>
-                    )}
-                    <TouchableOpacity
-                        style={[styles.testButton, isTesting && styles.testButtonDisabled]}
-                        onPress={handleTestConnection}
-                        disabled={isTesting}
-                    >
-                        {isTesting ? (
-                            <ActivityIndicator size="small" color="#FFFFFF" />
-                        ) : (
-                            <Text style={styles.testButtonText}>Test Connection</Text>
+                    <View style={styles.inputGroup}>
+                        <Text style={[styles.label, { color: colors.textMuted }]}>Port Number</Text>
+                        <TextInput
+                            style={[
+                                styles.textInput,
+                                { backgroundColor: colors.inputBg, borderColor: colors.inputBorder, color: colors.text }
+                            ]}
+                            value={port}
+                            onChangeText={setPort}
+                            placeholder="1234"
+                            placeholderTextColor={colors.textMuted}
+                            keyboardType="numeric"
+                        />
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={[styles.label, { color: colors.textMuted }]}>API Key (optional)</Text>
+                        <TextInput
+                            style={[
+                                styles.textInput,
+                                { backgroundColor: colors.inputBg, borderColor: colors.inputBorder, color: colors.text }
+                            ]}
+                            value={apiKey}
+                            onChangeText={setApiKey}
+                            placeholder="Leave empty for local"
+                            placeholderTextColor={colors.textMuted}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            secureTextEntry
+                        />
+                    </View>
+
+                    <View style={styles.buttonRow}>
+                        {configChanged && (
+                            <TouchableOpacity
+                                style={[styles.saveButton, { borderColor: colors.border, backgroundColor: colors.cardBackground }]}
+                                onPress={handleSaveConfig}
+                            >
+                                <Text style={[styles.saveButtonText, { color: colors.text }]}>Save Changes</Text>
+                            </TouchableOpacity>
                         )}
-                    </TouchableOpacity>
-                </View>
+                        <TouchableOpacity
+                            style={[
+                                styles.testButton,
+                                { backgroundColor: colors.tint },
+                                isTesting && styles.testButtonDisabled
+                            ]}
+                            onPress={handleTestConnection}
+                            disabled={isTesting}
+                        >
+                            {isTesting ? (
+                                <ActivityIndicator size="small" color={colors.backgroundColor} />
+                            ) : (
+                                <Text style={[styles.testButtonText, { color: colors.backgroundColor }]}>Test Connection</Text>
+                            )}
+                        </TouchableOpacity>
+                    </View>
 
-                {testResult !== null && (
-                    <View style={[styles.resultBox, testResult ? styles.resultSuccess : styles.resultError]}>
-                        <Text style={[styles.resultText, testResult ? styles.resultTextSuccess : styles.resultTextError]}>
-                            {testResult
-                                ? '✅ Connected successfully!'
-                                : '❌ Connection failed. Check host, port, and if LM Studio is running.'}
+                    {testResult !== null && (
+                        <View style={[
+                            styles.resultBox,
+                            { backgroundColor: testResult ? colors.successBg : colors.errorBg }
+                        ]}>
+                            <Text style={[
+                                styles.resultText,
+                                { color: testResult ? colors.successText : colors.errorText }
+                            ]}>
+                                {testResult
+                                    ? '✅ Connected successfully! API is ready.'
+                                    : '❌ Connection failed. Check host, port, and ensure LM Studio is running.'}
+                            </Text>
+                        </View>
+                    )}
+                </View>
+            </View>
+
+            {/* Appearance Section */}
+            <View style={[styles.section, isLargeScreen && styles.desktopSection]}>
+                <Text style={[styles.sectionLabel, { color: colors.textMuted }]}>APPEARANCE</Text>
+                <View style={[styles.card, { backgroundColor: colors.cardBackground, borderColor: colors.border }]}>
+                    <View style={styles.row}>
+                        <View style={styles.rowIconWrap}>
+                            <Moon size={20} color={colors.text} />
+                        </View>
+                        <View style={styles.rowText}>
+                            <Text style={[styles.rowTitle, { color: colors.text }]}>Dark Mode</Text>
+                            <Text style={[styles.rowSubtitle, { color: colors.textMuted }]}>Toggle sleek dark theme</Text>
+                        </View>
+                        <Switch
+                            value={isDarkMode}
+                            onValueChange={toggleTheme}
+                            trackColor={{ false: '#E2E8F0', true: colors.tint }}
+                            thumbColor={'#FFFFFF'}
+                        />
+                    </View>
+                </View>
+            </View>
+
+            {/* About Section */}
+            <View style={[styles.section, isLargeScreen && styles.desktopSection]}>
+                <Text style={[styles.sectionLabel, { color: colors.textMuted }]}>ABOUT</Text>
+                <View style={[styles.card, { backgroundColor: colors.cardBackground, borderColor: colors.border }]}>
+                    <View style={styles.rowGroup}>
+                        <Info size={18} color={colors.textMuted} style={styles.infoIcon} />
+                        <Text style={[styles.infoText, { color: colors.text }]}>LocalAiApp - Cross Platform Version</Text>
+                    </View>
+                    <View style={[styles.rowGroup, { marginTop: 8 }]}>
+                        <MonitorCog size={18} color={colors.textMuted} style={styles.infoIcon} />
+                        <Text style={[styles.infoText, { color: colors.textMuted, fontSize: 13 }]}>
+                            Connected via OpenAPI `/v1/chat/completions` specs
                         </Text>
                     </View>
-                )}
-            </View>
-
-            {/* Appearance */}
-            <View style={[styles.card, isLargeScreen && styles.desktopCard]}>
-                <Text style={styles.sectionTitle}>Appearance</Text>
-
-                <View style={styles.row}>
-                    <View style={styles.rowText}>
-                        <Text style={styles.rowTitle}>Dark Mode</Text>
-                        <Text style={styles.rowSubtitle}>Toggle application theme</Text>
-                    </View>
-                    <Switch
-                        value={isDarkMode}
-                        onValueChange={toggleTheme}
-                        trackColor={{ false: '#D1D5DB', true: '#000000' }}
-                        thumbColor={'#FFFFFF'}
-                    />
                 </View>
-            </View>
-
-            {/* About */}
-            <View style={[styles.card, isLargeScreen && styles.desktopCard]}>
-                <Text style={styles.sectionTitle}>About</Text>
-                <Text style={styles.infoText}>LocalAiApp - Cross Platform Version</Text>
-                <Text style={[styles.infoText, { marginTop: 4, fontSize: 13, color: '#9CA3AF' }]}>
-                    Using OpenAI-compatible API (/v1)
-                </Text>
             </View>
         </ScrollView>
     );
@@ -179,7 +227,6 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F3F4F6',
     },
     scrollContent: {
         padding: 16,
@@ -189,129 +236,130 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 40,
     },
-    card: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 16,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-        elevation: 2,
+    section: {
+        marginBottom: 24,
     },
-    desktopCard: {
+    desktopSection: {
         width: '100%',
         maxWidth: 600,
     },
-    sectionHeader: {
+    sectionLabel: {
+        fontSize: 13,
+        fontWeight: '600',
+        marginLeft: 16,
+        marginBottom: 8,
+        letterSpacing: 0.5,
+    },
+    card: {
+        borderRadius: 16,
+        padding: 16,
+        borderWidth: 1,
+    },
+    cardHeader: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 16,
     },
-    sectionTitle: {
+    cardHeaderTitle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    headerIcon: {
+        marginRight: 8,
+    },
+    cardTitle: {
         fontSize: 18,
         fontWeight: '700',
-        color: '#111827',
+    },
+    divider: {
+        height: 1,
+        width: '100%',
+        marginBottom: 16,
     },
     inputGroup: {
-        marginBottom: 14,
+        marginBottom: 16,
     },
     label: {
         fontSize: 14,
         fontWeight: '500',
-        color: '#374151',
-        marginBottom: 6,
+        marginBottom: 8,
     },
     textInput: {
-        backgroundColor: '#F9FAFB',
         borderWidth: 1,
-        borderColor: '#E5E7EB',
-        borderRadius: 10,
-        paddingHorizontal: 14,
-        paddingVertical: 10,
-        fontSize: 15,
-        color: '#111827',
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        fontSize: 16,
     },
     buttonRow: {
         flexDirection: 'row',
-        gap: 10,
-        marginTop: 4,
+        gap: 12,
+        marginTop: 8,
     },
     saveButton: {
         flex: 1,
-        backgroundColor: '#F3F4F6',
-        paddingVertical: 12,
-        borderRadius: 10,
+        paddingVertical: 14,
+        borderRadius: 12,
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: '#E5E7EB',
     },
     saveButtonText: {
         fontSize: 15,
         fontWeight: '600',
-        color: '#374151',
     },
     testButton: {
         flex: 2,
-        backgroundColor: '#000000',
-        paddingVertical: 12,
-        borderRadius: 10,
+        paddingVertical: 14,
+        borderRadius: 12,
         alignItems: 'center',
     },
     testButtonDisabled: {
-        opacity: 0.6,
+        opacity: 0.7,
     },
     testButtonText: {
         fontSize: 15,
         fontWeight: '600',
-        color: '#FFFFFF',
     },
     resultBox: {
-        marginTop: 12,
-        borderRadius: 8,
-        padding: 12,
-    },
-    resultSuccess: {
-        backgroundColor: '#F0FDF4',
-    },
-    resultError: {
-        backgroundColor: '#FEF2F2',
+        marginTop: 16,
+        borderRadius: 12,
+        padding: 14,
     },
     resultText: {
         fontSize: 14,
         textAlign: 'center',
-    },
-    resultTextSuccess: {
-        color: '#166534',
-    },
-    resultTextError: {
-        color: '#991B1B',
+        fontWeight: '500',
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 8,
+        paddingVertical: 4,
+    },
+    rowIconWrap: {
+        marginRight: 12,
     },
     rowText: {
         flex: 1,
-        paddingRight: 16,
     },
     rowTitle: {
         fontSize: 16,
-        fontWeight: '500',
-        color: '#111827',
+        fontWeight: '600',
         marginBottom: 4,
     },
     rowSubtitle: {
         fontSize: 14,
-        color: '#6B7280',
+    },
+    rowGroup: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    infoIcon: {
+        marginRight: 10,
     },
     infoText: {
         fontSize: 15,
         lineHeight: 22,
-        color: '#4B5563',
     },
 });

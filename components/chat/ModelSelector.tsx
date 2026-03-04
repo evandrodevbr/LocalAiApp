@@ -1,5 +1,6 @@
 import { ConnectionBadge } from '@/components/ui/ConnectionBadge';
 import { useLMStudio } from '@/hooks/useLMStudio';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { useAppStore } from '@/store/useAppStore';
 import { Check, ChevronDown, RefreshCw } from 'lucide-react-native';
 import React, { useState } from 'react';
@@ -20,6 +21,7 @@ export function ModelSelector() {
     const setActiveModelId = useAppStore(state => state.setActiveModelId);
     const { availableModels, isConnected, fetchModels } = useLMStudio();
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const colors = useThemeColor();
 
     const handleSelect = (modelId: string) => {
         setActiveModelId(modelId);
@@ -37,15 +39,15 @@ export function ModelSelector() {
     return (
         <>
             <TouchableOpacity
-                style={styles.headerButton}
+                style={[styles.headerButton, { backgroundColor: colors.cardBackground }]}
                 onPress={() => setModalVisible(true)}
                 activeOpacity={0.7}
             >
                 <ConnectionBadge isConnected={isConnected} compact />
-                <Text style={styles.headerText} numberOfLines={1}>
+                <Text style={[styles.headerText, { color: colors.text }]} numberOfLines={1}>
                     {activeModelName}
                 </Text>
-                <ChevronDown size={16} color="#111827" style={styles.iconOffset} />
+                <ChevronDown size={16} color={colors.text} style={styles.iconOffset} />
             </TouchableOpacity>
 
             <Modal
@@ -59,35 +61,35 @@ export function ModelSelector() {
                     activeOpacity={1}
                     onPressOut={() => setModalVisible(false)}
                 >
-                    <View style={styles.bottomSheet} onStartShouldSetResponder={() => true}>
-                        <View style={styles.dragHandle} />
+                    <View style={[styles.bottomSheet, { backgroundColor: colors.backgroundColor }]} onStartShouldSetResponder={() => true}>
+                        <View style={[styles.dragHandle, { backgroundColor: colors.border }]} />
 
                         <View style={styles.sheetHeader}>
-                            <Text style={styles.sheetTitle}>Select Model</Text>
+                            <Text style={[styles.sheetTitle, { color: colors.text }]}>Select Model</Text>
                             <TouchableOpacity
                                 onPress={handleRefresh}
-                                style={styles.refreshButton}
+                                style={[styles.refreshButton, { backgroundColor: colors.cardBackground }]}
                                 disabled={isRefreshing}
                             >
                                 {isRefreshing ? (
-                                    <ActivityIndicator size="small" color="#6B7280" />
+                                    <ActivityIndicator size="small" color={colors.textMuted} />
                                 ) : (
-                                    <RefreshCw size={18} color="#6B7280" />
+                                    <RefreshCw size={18} color={colors.textMuted} />
                                 )}
                             </TouchableOpacity>
                         </View>
 
                         {!isConnected && (
-                            <View style={styles.warningBox}>
-                                <Text style={styles.warningText}>
+                            <View style={[styles.warningBox, { backgroundColor: colors.bannerBg }]}>
+                                <Text style={[styles.warningText, { color: colors.bannerText }]}>
                                     Not connected to LM Studio. Configure server in Settings.
                                 </Text>
                             </View>
                         )}
 
                         {availableModels.length === 0 && isConnected && (
-                            <View style={styles.emptyBox}>
-                                <Text style={styles.emptyText}>
+                            <View style={[styles.emptyBox, { backgroundColor: colors.cardBackground }]}>
+                                <Text style={[styles.emptyText, { color: colors.textMuted }]}>
                                     No models loaded. Load a model in LM Studio first.
                                 </Text>
                             </View>
@@ -100,25 +102,29 @@ export function ModelSelector() {
                                 const isSelected = item.id === activeModelId;
                                 return (
                                     <TouchableOpacity
-                                        style={[styles.itemRow, isSelected && styles.itemRowSelected]}
+                                        style={[
+                                            styles.itemRow,
+                                            { backgroundColor: colors.cardBackground, borderColor: colors.border },
+                                            isSelected && { borderColor: colors.tint }
+                                        ]}
                                         onPress={() => handleSelect(item.id)}
                                     >
                                         <View style={styles.itemContent}>
-                                            <Text style={[styles.itemName, isSelected && styles.itemNameSelected]}>
+                                            <Text style={[styles.itemName, { color: colors.text }]}>
                                                 {item.id}
                                             </Text>
                                             <View style={styles.badgeRow}>
-                                                <View style={styles.badge}>
-                                                    <Text style={styles.badgeText}>API</Text>
+                                                <View style={[styles.badge, { backgroundColor: colors.inputBg }]}>
+                                                    <Text style={[styles.badgeText, { color: colors.textMuted }]}>API</Text>
                                                 </View>
                                                 {item.owned_by && (
-                                                    <View style={[styles.badge, styles.badgeSecondary]}>
-                                                        <Text style={styles.badgeText}>{item.owned_by}</Text>
+                                                    <View style={[styles.badge, { backgroundColor: colors.inputBg }]}>
+                                                        <Text style={[styles.badgeText, { color: colors.textMuted }]}>{item.owned_by}</Text>
                                                     </View>
                                                 )}
                                             </View>
                                         </View>
-                                        {isSelected && <Check size={20} color="#000000" />}
+                                        {isSelected && <Check size={20} color={colors.tint} />}
                                     </TouchableOpacity>
                                 );
                             }}
@@ -137,14 +143,12 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 8,
-        backgroundColor: '#F3F4F6',
         gap: 8,
         maxWidth: 280,
     },
     headerText: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#111827',
         flexShrink: 1,
     },
     iconOffset: {
@@ -152,11 +156,10 @@ const styles = StyleSheet.create({
     },
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.4)',
+        backgroundColor: 'rgba(0,0,0,0.5)',
         justifyContent: 'flex-end',
     },
     bottomSheet: {
-        backgroundColor: '#FFFFFF',
         borderTopLeftRadius: 24,
         borderTopRightRadius: 24,
         padding: 24,
@@ -181,7 +184,6 @@ const styles = StyleSheet.create({
     dragHandle: {
         width: 40,
         height: 4,
-        backgroundColor: '#E5E7EB',
         borderRadius: 2,
         alignSelf: 'center',
         marginBottom: 16,
@@ -196,33 +198,27 @@ const styles = StyleSheet.create({
     sheetTitle: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#111827',
     },
     refreshButton: {
         padding: 8,
         borderRadius: 8,
-        backgroundColor: '#F3F4F6',
     },
     warningBox: {
-        backgroundColor: '#FEF3C7',
         borderRadius: 8,
         padding: 12,
         marginBottom: 16,
     },
     warningText: {
         fontSize: 13,
-        color: '#92400E',
         textAlign: 'center',
     },
     emptyBox: {
-        backgroundColor: '#F3F4F6',
         borderRadius: 8,
         padding: 16,
         marginBottom: 16,
     },
     emptyText: {
         fontSize: 14,
-        color: '#6B7280',
         textAlign: 'center',
     },
     itemRow: {
@@ -233,13 +229,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         borderRadius: 12,
         marginBottom: 8,
-        backgroundColor: '#FFFFFF',
         borderWidth: 1,
-        borderColor: '#E5E7EB',
-    },
-    itemRowSelected: {
-        borderColor: '#000000',
-        backgroundColor: '#F9FAFB',
     },
     itemContent: {
         flex: 1,
@@ -248,11 +238,7 @@ const styles = StyleSheet.create({
     itemName: {
         fontSize: 15,
         fontWeight: '600',
-        color: '#111827',
         marginBottom: 6,
-    },
-    itemNameSelected: {
-        color: '#000000',
     },
     badgeRow: {
         flexDirection: 'row',
@@ -260,17 +246,12 @@ const styles = StyleSheet.create({
     },
     badge: {
         alignSelf: 'flex-start',
-        backgroundColor: '#DBEAFE',
         paddingHorizontal: 8,
         paddingVertical: 3,
         borderRadius: 6,
     },
-    badgeSecondary: {
-        backgroundColor: '#F3F4F6',
-    },
     badgeText: {
         fontSize: 11,
         fontWeight: '500',
-        color: '#4B5563',
     },
 });

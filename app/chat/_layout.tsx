@@ -1,4 +1,5 @@
 import { ModelSelector } from '@/components/chat/ModelSelector';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { useAppStore } from '@/store/useAppStore';
 import { Stack, useRouter } from 'expo-router';
 import { Plus, Settings } from 'lucide-react-native';
@@ -8,36 +9,45 @@ export default function ChatLayout() {
     const { width } = useWindowDimensions();
     const router = useRouter();
     const clearChat = useAppStore(state => state.clearChat);
+    const colors = useThemeColor();
 
     const isLargeScreen = width > 768;
-    const containerStyle = isLargeScreen ? styles.desktopContainer : styles.mobileContainer;
+    const containerStyle = [
+        isLargeScreen ? styles.desktopContainer : styles.mobileContainer,
+        { backgroundColor: isLargeScreen ? colors.border : colors.backgroundColor }
+    ];
     const chatMaxWidth = isLargeScreen ? 800 : '100%';
 
     return (
         <View style={containerStyle}>
-            <View style={[styles.chatWrapper, { maxWidth: chatMaxWidth }]}>
+            <View style={[
+                styles.chatWrapper,
+                { maxWidth: chatMaxWidth, backgroundColor: colors.backgroundColor },
+                isLargeScreen && { borderColor: colors.border, borderWidth: 1 }
+            ]}>
                 <Stack>
                     <Stack.Screen
                         name="index"
                         options={{
                             headerTitle: () => <ModelSelector />,
                             headerShadowVisible: false,
+                            headerStyle: { backgroundColor: colors.backgroundColor },
                             headerLeft: () => (
                                 <TouchableOpacity
                                     onPress={clearChat}
-                                    style={styles.headerBtn}
+                                    style={[styles.headerBtn, { backgroundColor: colors.cardBackground }]}
                                     activeOpacity={0.7}
                                 >
-                                    <Plus size={22} color="#111827" />
+                                    <Plus size={22} color={colors.text} />
                                 </TouchableOpacity>
                             ),
                             headerRight: () => (
                                 <TouchableOpacity
                                     onPress={() => router.push('/settings')}
-                                    style={styles.headerBtn}
+                                    style={[styles.headerBtn, { backgroundColor: colors.cardBackground }]}
                                     activeOpacity={0.7}
                                 >
-                                    <Settings size={22} color="#111827" />
+                                    <Settings size={22} color={colors.text} />
                                 </TouchableOpacity>
                             ),
                         }}
@@ -51,18 +61,15 @@ export default function ChatLayout() {
 const styles = StyleSheet.create({
     desktopContainer: {
         flex: 1,
-        backgroundColor: '#F3F4F6',
         alignItems: 'center',
         justifyContent: 'center',
     },
     mobileContainer: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
     },
     chatWrapper: {
         flex: 1,
         width: '100%',
-        backgroundColor: '#FFFFFF',
         ...Platform.select({
             web: {
                 shadowColor: '#000',
