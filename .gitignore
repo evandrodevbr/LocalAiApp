@@ -1,122 +1,43 @@
-<<<<<<< HEAD
-# Dependências
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
 node_modules/
-.pnp
-.pnp.js
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-venv/
-env/
-ENV/
-.venv
-*.egg-info/
+# Expo
+.expo/
 dist/
-build/
-.pytest_cache/
-.coverage
-htmlcov/
+web-build/
+expo-env.d.ts
 
-# Rust / Cargo
-src-tauri/target/
-**/*.rs.bk
-Cargo.lock
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
 
-# Build outputs
-dist/
-dist-ssr/
-*.local
-.vite/
+# Metro
+.metro-health-check*
 
-# Modelos de ML (arquivos grandes)
-*.gguf
-*.bin
-*.safetensors
-*.pt
-*.pth
-*.ckpt
-models/
-*.model
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
 
-# Variáveis de ambiente
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# macOS
+.DS_Store
+*.pem
+
+# local env files
 .env*.local
 
-# Logs
-logs/
-=======
-# Logs
-logs
->>>>>>> ce33464 (feat: initialize Tauri application with Preact framework)
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# typescript
+*.tsbuildinfo
 
-<<<<<<< HEAD
-# IDEs e editores
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
+app-example
 
-# Sistema operacional
-Thumbs.db
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Desktop.ini
-
-# Tauri
-src-tauri/target/
-src-tauri/WixTools/
-
-# Cache
-.cache/
-.parcel-cache/
-.next/
-.nuxt/
-.turbo/
-.vercel/
-
-# Temporários
-*.tmp
-*.temp
-*.bak
-*.backup
-=======
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
->>>>>>> ce33464 (feat: initialize Tauri application with Preact framework)
+# generated native folders
+/ios
+/android

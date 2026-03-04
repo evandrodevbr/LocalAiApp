@@ -1,103 +1,50 @@
-# localaiapp
+# Welcome to your Expo app 👋
 
-O **localaiapp** é um orquestrador de inteligência artificial local de alta performance, construído sobre a stack **Tauri (Rust)** para o core, **Preact** para a interface de usuário de baixo footprint, e **Python (Llama)** como motor de inferência via Sidecar.
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
----
+## Get started
 
-## 1. Abordagem de Princípios Primeiros (Arquitetura)
+1. Install dependencies
 
-A escolha do modelo **Sidecar** em detrimento de um servidor local (HTTP) baseia-se na **eficiência de IPC (Inter-Process Communication)** e **gestão de ciclo de vida**:
+   ```bash
+   npm install
+   ```
 
-- **Isolamento de Processo:** O motor de IA (Python) roda como um processo filho binário. Se a inferência travar, o core em Rust pode reiniciá-lo sem derrubar a UI.
-- **Segurança de Memória:** O Rust atua como um "vigia", garantindo que os recursos de GPU/RAM consumidos pelo Llama sejam liberados imediatamente após o encerramento do app.
-- **Distribuição:** Ao compilar o Python com Nuitka ou PyInstaller, eliminamos a necessidade de o usuário final ter o Python instalado no sistema.
+2. Start the app
 
----
+   ```bash
+   npx expo start
+   ```
 
-## 2. Setup do Ambiente de Desenvolvimento
+In the output, you'll find options to open the app in a
 
-### Pré-requisitos de Engenharia
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-| Componente          | Windows (PowerShell)           | Manjaro Linux (Pacman/Pamac)    |
-| ------------------- | ------------------------------ | ------------------------------- |
-| **Rust**            | `rustup` (MSVC toolchain)      | `rustup` ou `pacman -S rust`    |
-| **Node.js**         | `winget install OpenJS.NodeJS` | `sudo pacman -S nodejs npm`     |
-| **C++ Build Tools** | Visual Studio Build Tools 2022 | `sudo pacman -S base-devel`     |
-| **Webview Engine**  | WebView2 (Nativo)              | `sudo pacman -S webkit2gtk-4.1` |
-| **Python Tooling**  | `python -m pip install nuitka` | `sudo pacman -S python-pip`     |
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-### Instalação e Inicialização
+## Get a fresh project
 
-1. **Clone o repositório:**
-
-```bash
-git clone https://github.com/seu-usuario/localaiapp.git
-cd localaiapp
-
-```
-
-2. **Instale as dependências do Frontend:**
+When you're ready, run:
 
 ```bash
-npm install
-
+npm run reset-project
 ```
 
-3. **Preparação do Sidecar (Python):**
-   > **Nota Crítica:** O Tauri exige que o binário sidecar siga a nomenclatura `[nome]-[target-triple]`.
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-```bash
-# Exemplo de comando para gerar o binário (dentro da pasta /src-python)
-python -m Nuitka --standalone --onefile main.py
+## Learn more
 
-```
+To learn more about developing your project with Expo, look at the following resources:
 
----
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-## 3. Estrutura do Projeto
+## Join the community
 
-```plaintext
-localaiapp/
-├── src/                # Frontend (Preact + Typescript)
-│   ├── components/     # Componentes atômicos
-│   └── main.tsx        # Entry point do Preact
-├── src-tauri/          # Core do Sistema (Rust)
-│   ├── bin/            # Binários Sidecar (Python compilado)
-│   ├── src/            # Lógica de ponte Rust-UI
-│   └── tauri.conf.json # Configuração de permissões e sidecars
-├── src-python/         # Motor de IA (Llama-cpp-python)
-│   ├── main.py         # Script principal de inferência
-│   └── requirements.txt
-└── public/             # Assets estáticos
+Join our community of developers creating universal apps.
 
-```
-
----
-
-## 4. Fluxo de Execução (Engenharia de Dados)
-
-1. **Frontend (Preact):** Dispara um evento `invoke('start_inference', { prompt: '...' })`.
-2. **Bridge (Rust):** O Tauri recebe o comando, valida os parâmetros e comunica-se via `stdin` ou `localhost socket` com o processo Sidecar.
-3. **Sidecar (Python):** O Llama processa os tensores, gera o stream de tokens e devolve ao Rust.
-4. **Update (UI):** O Preact utiliza **Signals** para atualizar a interface em tempo real com o mínimo de re-renders.
-
----
-
-## 5. Roadmap de Desenvolvimento
-
-- [x] Setup Inicial (Tauri + Preact + TS)
-- [ ] Implementação do Sidecar Llama (C++ Bindings)
-- [ ] Suporte a Aceleração de Hardware (CUDA/Vulkan)
-- [ ] **Futuro:** Módulo de Web Search (Integração de busca via Python e extração de contexto).
-
----
-
-## 6. Verificação de Lacunas (Common Pitfalls)
-
-- **PATH no Windows:** Certifique-se de que o compilador C++ está no PATH, ou o Tauri não conseguirá compilar os bindings do Rust.
-- **Permissões no Linux:** No Manjaro, o WebKitGTK pode exigir permissões específicas de sandbox dependendo da versão do Kernel.
-- **Sidecar Naming:** O erro mais comum é não incluir o _target triple_ (ex: `x86_64-unknown-linux-gnu`) no nome do binário dentro de `src-tauri/bin`.
-
----
-
-**Como você é um engenheiro e estamos no início, gostaria que eu criasse o script inicial em Python para o Sidecar já com as tipagens básicas ou prefere focar na configuração do `tauri.conf.json` para reconhecer o binário?**
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
