@@ -1,5 +1,5 @@
 const tintColorLight = '#0F172A'; // slate-900
-const tintColorDark = '#F8FAFC';  // slate-50
+const tintColorDark = '#FAFAFA';  // zinc-50
 
 export const Colors = {
     light: {
@@ -28,22 +28,22 @@ export const Colors = {
         shadow: '#000000',
     },
     dark: {
-        backgroundColor: '#020617', // slate-950
-        cardBackground: '#0F172A', // slate-900
-        text: '#F8FAFC', // slate-50
-        textMuted: '#94A3B8', // slate-400
-        border: '#1E293B', // slate-800
+        backgroundColor: '#09090B', // zinc-950
+        cardBackground: '#18181B', // zinc-900
+        text: '#FAFAFA', // zinc-50
+        textMuted: '#A1A1AA', // zinc-400
+        border: '#27272A', // zinc-800
         tint: tintColorDark,
-        icon: '#94A3B8',
-        tabIconDefault: '#475569',
+        icon: '#A1A1AA',
+        tabIconDefault: '#52525B', // zinc-600
         tabIconSelected: tintColorDark,
         // Chat specific
-        messageUserText: '#020617', // slate-950
-        messageUserBg: '#F8FAFC', // slate-50
-        messageAssistantText: '#E2E8F0', // slate-200
-        messageAssistantBg: '#0F172A', // slate-900
-        inputBg: '#0F172A', // slate-900
-        inputBorder: '#1E293B', // slate-800
+        messageUserText: '#09090B', // zinc-950
+        messageUserBg: '#FAFAFA', // zinc-50
+        messageAssistantText: '#F4F4F5', // zinc-100
+        messageAssistantBg: '#18181B', // zinc-900
+        inputBg: '#18181B', // zinc-900
+        inputBorder: '#27272A', // zinc-800
         bannerBg: '#451A03', // amber-950
         bannerText: '#FDE68A', // amber-200
         successBg: '#052E16', // green-950

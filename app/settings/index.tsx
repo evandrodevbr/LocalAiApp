@@ -37,7 +37,7 @@ export default function SettingsScreen() {
     const [testResult, setTestResult] = useState<boolean | null>(null);
 
     const isLargeScreen = width > 768;
-    const isDarkMode = themePreference === 'dark' || (themePreference === 'system' && colors.backgroundColor === '#020617'); // Hacky check but robust given our Colors.ts
+    const isDarkMode = themePreference === 'dark' || (themePreference === 'system' && colors.backgroundColor === '#09090B'); // Hacky check but robust given our Colors.ts
     const toggleTheme = () => setTheme(isDarkMode ? 'light' : 'dark');
 
     const currentConfig: ServerConfig = {
@@ -174,8 +174,8 @@ export default function SettingsScreen() {
                                 { color: testResult ? colors.successText : colors.errorText }
                             ]}>
                                 {testResult
-                                    ? '✅ Connected successfully! API is ready.'
-                                    : '❌ Connection failed. Check host, port, and ensure LM Studio is running.'}
+                                    ? 'Connection successful. API is ready.'
+                                    : 'Connection failed. Verify host and port.'}
                             </Text>
                         </View>
                     )}
