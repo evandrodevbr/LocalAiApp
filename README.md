@@ -1,4 +1,4 @@
-# Local AI Companion
+# LocalMind
 
 ![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![Expo](https://img.shields.io/badge/expo-1C1E24?style=for-the-badge&logo=expo&logoColor=#D04A37) ![Zustand](https://img.shields.io/badge/Zustand-443E38?style=for-the-badge&logo=react&logoColor=white) ![LMStudio](https://img.shields.io/badge/Powered_by-LMStudio-5E5DF0?style=for-the-badge)
 
