@@ -1,0 +1,2529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>evandro.dev.br — Design System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Geist+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════
+   RESET & ROOT TOKENS
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* — Cores primárias */
+  --ink:        #0A0A0A;
+  --ink-80:     rgba(10,10,10,.8);
+  --ink-40:     rgba(10,10,10,.4);
+  --ink-12:     rgba(10,10,10,.12);
+  --ink-06:     rgba(10,10,10,.06);
+  --paper:      #F4F2ED;
+  --paper-dark: #ECEAE4;
+  --white:      #FFFFFF;
+
+  /* — Acento */
+  --slash:      #E8FF00;
+  --slash-dim:  rgba(232,255,0,.15);
+
+  /* — Neutros */
+  --meta:       #777;
+  --border:     rgba(10,10,10,.1);
+  --border-light: rgba(10,10,10,.06);
+
+  /* — Tokens de spacing (escala 4px) */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+  --sp-12: 48px; --sp-16: 64px; --sp-20: 80px; --sp-24: 96px;
+
+  /* — Radius */
+  --r-sm: 4px; --r-md: 8px; --r-lg: 16px; --r-full: 999px;
+
+  /* — Tipografia */
+  --font-display: 'Syne', sans-serif;
+  --font-mono:    'Geist Mono', monospace;
+
+  /* — Transições */
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --ease-in:  cubic-bezier(.4,0,1,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ════════════════════════════════════════════
+   NAV STICKY
+════════════════════════════════════════════ */
+.ds-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(10,10,10,.96);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--sp-16);
+  height: 52px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* Logo D inline no nav */
+.nav-logo-mark svg { display: block; }
+
+.nav-brand {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+.nav-brand span { color: var(--slash); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  list-style: none;
+}
+.nav-links a {
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+  text-decoration: none;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  transition: color .2s, background .2s;
+}
+.nav-links a:hover {
+  color: var(--white);
+  background: rgba(255,255,255,.06);
+}
+
+.nav-version {
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: rgba(255,255,255,.2);
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--r-full);
+}
+
+/* ════════════════════════════════════════════
+   LAYOUT SHELL
+════════════════════════════════════════════ */
+.ds-main { padding-top: 52px; }
+
+.ds-section {
+  padding: var(--sp-20) var(--sp-16);
+  border-bottom: 1px solid var(--border);
+}
+.ds-section:nth-child(even) { background: var(--paper-dark); }
+.ds-section.dark {
+  background: var(--ink);
+  border-bottom-color: rgba(255,255,255,.06);
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--sp-12);
+  gap: var(--sp-8);
+}
+.section-eyebrow {
+  font-size: 9px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--meta);
+  margin-bottom: var(--sp-2);
+}
+.ds-section.dark .section-eyebrow { color: rgba(255,255,255,.3); }
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.ds-section.dark .section-title { color: var(--white); }
+.section-desc {
+  font-size: 11px;
+  color: var(--meta);
+  line-height: 1.8;
+  max-width: 400px;
+  margin-top: var(--sp-2);
+}
+.ds-section.dark .section-desc { color: rgba(255,255,255,.35); }
+
+/* ════════════════════════════════════════════
+   01 — HERO
+════════════════════════════════════════════ */
+.hero {
+  background: var(--ink);
+  padding: var(--sp-24) var(--sp-16);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: var(--sp-16);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Grade de fundo sutil */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.hero-text { position: relative; z-index: 1; }
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 9px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  margin-bottom: var(--sp-8);
+}
+.hero-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--slash);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .5; transform: scale(.75); }
+}
+.hero-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--sp-6);
+}
+.hero-h1 .slash-accent { color: var(--slash); }
+.hero-tagline {
+  font-size: 12px;
+  color: rgba(255,255,255,.35);
+  line-height: 1.8;
+  max-width: 380px;
+  margin-bottom: var(--sp-10);
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.06);
+  max-width: 380px;
+}
+.hero-stat {
+  padding: var(--sp-5) var(--sp-6);
+  background: rgba(255,255,255,.02);
+}
+.hero-stat-val {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--white);
+}
+.hero-stat-val span { color: var(--slash); }
+.hero-stat-key {
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.25);
+  margin-top: 2px;
+}
+
+/* — Logo D hero display — */
+.hero-logo-showcase {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-6);
+}
+.logo-hero-wrap {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,.06);
+  position: relative;
+}
+.logo-hero-wrap::before {
+  content: 'D — SLASH MARK';
+  position: absolute;
+  top: var(--sp-5);
+  left: var(--sp-6);
+  font-size: 9px;
+  letter-spacing: .14em;
+  color: rgba(255,255,255,.2);
+}
+.logo-hero-wrap::after {
+  content: 'CONCEITO ESCOLHIDO';
+  position: absolute;
+  bottom: var(--sp-5);
+  right: var(--sp-6);
+  font-size: 9px;
+  letter-spacing: .14em;
+  color: var(--slash);
+  opacity: .6;
+}
+.logo-hero-annotation {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: rgba(255,255,255,.2);
+}
+.logo-hero-annotation::before { content: ''; width: 24px; height: 1px; background: rgba(255,255,255,.15); }
+
+/* ════════════════════════════════════════════
+   02 — LOGO SYSTEM
+════════════════════════════════════════════ */
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-bottom: var(--sp-10);
+}
+.logo-variant {
+  background: var(--paper);
+  padding: var(--sp-10) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-6);
+  min-height: 220px;
+  justify-content: center;
+  position: relative;
+}
+.logo-variant.on-dark { background: var(--ink); }
+.logo-variant.on-slash { background: var(--slash); }
+
+.logo-variant-label {
+  font-size: 9px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--meta);
+  text-align: center;
+}
+.logo-variant.on-dark .logo-variant-label { color: rgba(255,255,255,.25); }
+.logo-variant.on-slash .logo-variant-label { color: rgba(0,0,0,.4); }
+
+/* — Logo wordmark horizontal — */
+.logo-wordmark {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.logo-wordmark-text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+.logo-wordmark-text .dot { color: var(--slash); }
+.logo-variant.on-dark .logo-wordmark-text { color: var(--white); }
+
+/* ─ Logo construção ─ */
+.logo-anatomy {
+  border: 1px solid var(--border);
+  padding: var(--sp-10);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-10);
+  align-items: center;
+  margin-top: var(--sp-10);
+}
+.anatomy-rules {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+.anatomy-rule {
+  display: flex;
+  gap: var(--sp-4);
+}
+.anatomy-rule-num {
+  font-size: 10px;
+  color: var(--slash);
+  font-weight: 600;
+  min-width: 20px;
+  line-height: 1.6;
+}
+.anatomy-rule-text { font-size: 11px; color: var(--meta); line-height: 1.7; }
+.anatomy-rule-text strong { color: var(--ink); }
+
+/* — Clearspace — */
+.clearspace-demo {
+  border: 1px dashed var(--border);
+  padding: var(--sp-10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.clearspace-arrow {
+  position: absolute;
+  font-size: 9px;
+  color: var(--meta);
+  letter-spacing: .08em;
+}
+.clearspace-arrow.top { top: var(--sp-3); left: 50%; transform: translateX(-50%); }
+.clearspace-arrow.right { right: var(--sp-3); top: 50%; transform: translateY(-50%); }
+
+/* ════════════════════════════════════════════
+   03 — COLOR TOKENS
+════════════════════════════════════════════ */
+.color-system {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-10);
+}
+.color-group-title {
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--meta);
+  margin-bottom: var(--sp-4);
+}
+.color-tokens {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.color-token {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.color-token:last-child { border-bottom: none; }
+.color-token:hover { background: var(--paper-dark); }
+.color-swatch-box {
+  width: 100%;
+  height: 32px;
+  border-radius: var(--r-sm);
+  border: 1px solid rgba(0,0,0,.08);
+  flex-shrink: 0;
+}
+.color-token-name { font-size: 11px; font-weight: 500; color: var(--ink); }
+.color-token-val { font-size: 10px; color: var(--meta); }
+.color-token-use { font-size: 9px; color: var(--meta); text-align: right; }
+
+/* ════════════════════════════════════════════
+   04 — TYPOGRAPHY SCALE
+════════════════════════════════════════════ */
+.type-scale {
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.type-scale-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px 80px;
+  align-items: center;
+  padding: var(--sp-5) var(--sp-8);
+  border-bottom: 1px solid var(--border);
+  gap: var(--sp-6);
+  transition: background .15s;
+}
+.type-scale-row:last-child { border-bottom: none; }
+.type-scale-row:hover { background: var(--paper-dark); }
+.type-scale-row.header {
+  background: var(--ink);
+  color: rgba(255,255,255,.4);
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.type-scale-token { font-size: 10px; color: var(--meta); font-weight: 500; }
+.type-scale-sample { line-height: 1.2; }
+.type-scale-size { font-size: 10px; color: var(--meta); }
+.type-scale-weight { font-size: 10px; color: var(--meta); }
+
+/* — Code typography showcase — */
+.code-block {
+  background: var(--ink);
+  border-radius: var(--r-md);
+  padding: var(--sp-6) var(--sp-8);
+  position: relative;
+  overflow: hidden;
+}
+.code-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--slash), transparent);
+  opacity: .3;
+}
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-5);
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.code-dots { display: flex; gap: 6px; }
+.code-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.cd-r { background: #FF5F56; }
+.cd-y { background: #FFBD2E; }
+.cd-g { background: #27C93F; }
+.code-filename { font-size: 10px; color: rgba(255,255,255,.2); letter-spacing: .05em; }
+.code-body { font-size: 12px; line-height: 1.9; }
+.c-comment { color: rgba(255,255,255,.25); }
+.c-keyword { color: #C792EA; }
+.c-fn { color: #82AAFF; }
+.c-string { color: #C3E88D; }
+.c-num { color: #F78C6C; }
+.c-var { color: var(--white); }
+.c-accent { color: var(--slash); }
+.c-type { color: #FFCB6B; }
+
+/* ════════════════════════════════════════════
+   05 — SPACING
+════════════════════════════════════════════ */
+.spacing-scale {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--border);
+}
+.spacing-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px 80px;
+  align-items: center;
+  gap: var(--sp-6);
+  padding: var(--sp-3) var(--sp-6);
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+}
+.spacing-row:last-child { border-bottom: none; }
+.spacing-row:hover { background: var(--paper-dark); }
+.spacing-token { font-size: 10px; color: var(--slash); font-weight: 600; }
+.spacing-bar-wrap { }
+.spacing-bar {
+  height: 8px;
+  background: var(--ink);
+  border-radius: 2px;
+}
+.spacing-px { font-size: 10px; color: var(--meta); text-align: right; }
+.spacing-use { font-size: 9px; color: var(--meta); text-align: right; }
+
+/* ════════════════════════════════════════════
+   06 — COMPONENTS
+════════════════════════════════════════════ */
+.comp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-bottom: var(--sp-10);
+}
+.comp-cell {
+  background: var(--paper);
+  padding: var(--sp-10) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+.comp-cell.dark { background: var(--ink); }
+.comp-cell-label {
+  font-size: 9px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--meta);
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--border);
+}
+.comp-cell.dark .comp-cell-label {
+  color: rgba(255,255,255,.2);
+  border-bottom-color: rgba(255,255,255,.06);
+}
+.comp-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+/* ─ BOTÕES ─ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-6);
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  border-radius: var(--r-sm);
+  transition:
+    transform .15s var(--ease-out),
+    background .15s,
+    box-shadow .15s,
+    opacity .15s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: scale(.98); }
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--white);
+  box-shadow: 0 0 0 1px var(--ink), 0 4px 12px rgba(10,10,10,.2);
+}
+.btn-primary:hover {
+  background: #1A1A1A;
+  box-shadow: 0 0 0 1px #1A1A1A, 0 8px 20px rgba(10,10,10,.25);
+}
+.btn-slash {
+  background: var(--slash);
+  color: var(--ink);
+  box-shadow: 0 0 0 1px rgba(232,255,0,.5), 0 4px 16px rgba(232,255,0,.25);
+}
+.btn-slash:hover {
+  box-shadow: 0 0 0 1px rgba(232,255,0,.8), 0 8px 24px rgba(232,255,0,.35);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.btn-outline:hover { background: var(--paper-dark); }
+.btn-ghost {
+  background: transparent;
+  color: var(--meta);
+}
+.btn-ghost:hover { background: var(--ink-06); color: var(--ink); }
+
+/* dark variants */
+.btn-outline-white {
+  background: transparent;
+  color: var(--white);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.15);
+}
+.btn-outline-white:hover { background: rgba(255,255,255,.06); }
+.btn-ghost-white { background: transparent; color: rgba(255,255,255,.4); }
+.btn-ghost-white:hover { background: rgba(255,255,255,.06); color: var(--white); }
+
+.btn-sm { height: 32px; padding: 0 var(--sp-4); font-size: 10px; }
+.btn-lg { height: 52px; padding: 0 var(--sp-8); font-size: 13px; }
+.btn-icon {
+  width: 40px; height: 40px; padding: 0;
+  justify-content: center;
+}
+.btn-icon.btn-sm { width: 32px; height: 32px; }
+.btn-icon.btn-lg { width: 52px; height: 52px; }
+
+/* ─ BADGES ─ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.badge-default { background: var(--ink-06); color: var(--ink); box-shadow: inset 0 0 0 1px var(--border); }
+.badge-slash { background: var(--slash-dim); color: #7A8800; box-shadow: inset 0 0 0 1px rgba(232,255,0,.3); }
+.badge-success { background: rgba(34,197,94,.1); color: #15803D; box-shadow: inset 0 0 0 1px rgba(34,197,94,.25); }
+.badge-error { background: rgba(239,68,68,.08); color: #B91C1C; box-shadow: inset 0 0 0 1px rgba(239,68,68,.2); }
+.badge-dot::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .8;
+}
+
+/* ─ TAGS ─ */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: 10px;
+  color: var(--meta);
+  background: var(--paper);
+  cursor: default;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.tag:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+
+/* ─ INPUTS ─ */
+.input-wrap { display: flex; flex-direction: column; gap: var(--sp-2); width: 100%; }
+.input-label { font-size: 10px; letter-spacing: .08em; color: var(--meta); }
+.input {
+  height: 40px;
+  padding: 0 var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  width: 100%;
+}
+.input:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px var(--ink-06);
+}
+.input::placeholder { color: var(--meta); }
+
+.input-prefix-wrap {
+  position: relative;
+}
+.input-prefix {
+  position: absolute;
+  left: var(--sp-4);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  color: var(--meta);
+  pointer-events: none;
+}
+.input-prefix-wrap .input { padding-left: 80px; }
+
+.textarea {
+  padding: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink);
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color .2s, box-shadow .2s;
+  width: 100%;
+}
+.textarea:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px var(--ink-06);
+}
+
+/* ─ CARDS ─ */
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  overflow: hidden;
+  transition: box-shadow .25s var(--ease-out), transform .25s var(--ease-out);
+}
+.card:hover {
+  box-shadow: 0 1px 0 0 var(--border), 0 12px 32px -8px rgba(10,10,10,.12);
+  transform: translateY(-2px);
+}
+.card-header {
+  padding: var(--sp-6) var(--sp-6) var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.card-icon {
+  width: 32px; height: 32px;
+  background: var(--ink);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.card-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; }
+.card-subtitle { font-size: 10px; color: var(--meta); margin-top: 2px; }
+.card-body { padding: var(--sp-5) var(--sp-6); font-size: 11px; color: var(--meta); line-height: 1.7; }
+.card-footer {
+  padding: var(--sp-4) var(--sp-6);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ─ TOGGLE / SWITCH ─ */
+.toggle-wrap { display: flex; align-items: center; gap: var(--sp-3); cursor: pointer; }
+.toggle {
+  width: 36px; height: 20px;
+  border-radius: var(--r-full);
+  background: var(--border);
+  position: relative;
+  transition: background .2s;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.toggle.on { background: var(--ink); border-color: var(--ink); }
+.toggle.slash { background: var(--slash); border-color: rgba(232,255,0,.6); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--white);
+  transition: transform .2s var(--ease-out);
+}
+.toggle.on::after, .toggle.slash::after { transform: translateX(16px); }
+.toggle-label { font-size: 11px; color: var(--ink); }
+
+/* ─ PROGRESS ─ */
+.progress-wrap { width: 100%; }
+.progress-header { display: flex; justify-content: space-between; margin-bottom: var(--sp-2); }
+.progress-name { font-size: 10px; color: var(--meta); }
+.progress-val { font-size: 10px; color: var(--meta); }
+.progress-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: var(--r-full);
+  background: var(--ink);
+  position: relative;
+}
+.progress-fill.accent { background: var(--slash); }
+
+/* ─ TOOLTIP ─ */
+.tooltip-demo { position: relative; display: inline-flex; }
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--white);
+  font-size: 10px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(10,10,10,.3);
+}
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--ink);
+}
+
+/* ─ NOTIFICATION ─ */
+.notification {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-4) var(--sp-6);
+  background: var(--paper);
+  display: flex;
+  gap: var(--sp-4);
+  align-items: flex-start;
+  box-shadow: 0 2px 8px rgba(10,10,10,.06);
+}
+.notif-icon {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  margin-top: 1px;
+}
+.notif-icon.info { background: #EFF6FF; color: #1D4ED8; }
+.notif-icon.warn { background: #FFFBEB; color: #B45309; }
+.notif-icon.success { background: #F0FDF4; color: #15803D; }
+.notif-icon.error { background: #FEF2F2; color: #B91C1C; }
+.notif-title { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+.notif-msg { font-size: 10px; color: var(--meta); line-height: 1.6; }
+
+/* ─ SKELETON ─ */
+.skeleton {
+  background: linear-gradient(90deg, var(--border) 25%, var(--paper-dark) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+  border-radius: var(--r-sm);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─ TABLE ─ */
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  font-size: 11px;
+}
+.ds-table th {
+  background: var(--ink);
+  color: rgba(255,255,255,.5);
+  text-align: left;
+  padding: var(--sp-3) var(--sp-5);
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-right: 1px solid rgba(255,255,255,.05);
+}
+.ds-table th:last-child { border-right: none; }
+.ds-table td {
+  padding: var(--sp-3) var(--sp-5);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.ds-table td:last-child { border-right: none; }
+.ds-table tr:last-child td { border-bottom: none; }
+.ds-table tr:hover td { background: var(--paper-dark); }
+.ds-table .td-token { color: var(--slash); font-weight: 600; font-size: 10px; }
+.ds-table .td-meta { color: var(--meta); }
+
+/* ════════════════════════════════════════════
+   07 — ICONOGRAFIA
+════════════════════════════════════════════ */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.icon-cell {
+  background: var(--paper);
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-5);
+  transition: background .15s;
+  cursor: pointer;
+}
+.icon-cell:hover { background: var(--ink); }
+.icon-cell:hover svg { stroke: var(--slash); }
+.icon-cell:hover .icon-name { color: rgba(255,255,255,.3); }
+.icon-cell svg { stroke: var(--ink); transition: stroke .15s; }
+.icon-name { font-size: 7px; letter-spacing: .06em; color: var(--meta); text-transform: uppercase; }
+
+/* ════════════════════════════════════════════
+   08 — MOTION
+════════════════════════════════════════════ */
+.motion-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.motion-cell {
+  background: var(--paper);
+  padding: var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-5);
+  min-height: 180px;
+  justify-content: center;
+}
+.motion-demo-box {
+  width: 48px; height: 48px;
+  background: var(--ink);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition-timing-function: var(--ease-out);
+}
+.motion-cell:hover .motion-fade { opacity: 0; }
+.motion-fade { transition: opacity .4s var(--ease-out); }
+
+.motion-cell:hover .motion-slide { transform: translateX(24px); }
+.motion-slide { transition: transform .4s var(--ease-out); }
+
+.motion-cell:hover .motion-scale { transform: scale(1.3) rotate(6deg); }
+.motion-scale { transition: transform .4s var(--ease-out); }
+
+.motion-label {
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--meta);
+  text-align: center;
+}
+.motion-spec {
+  font-size: 9px;
+  color: var(--slash);
+  background: var(--ink);
+  padding: 3px 8px;
+  border-radius: var(--r-sm);
+  letter-spacing: .06em;
+}
+
+/* ════════════════════════════════════════════
+   09 — BRAND VOICE
+════════════════════════════════════════════ */
+.voice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-6);
+}
+.voice-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.voice-card-head {
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  border-bottom: 1px solid var(--border);
+}
+.voice-card-head.do { background: #F0FDF4; }
+.voice-card-head.dont { background: #FEF2F2; }
+.voice-indicator {
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.voice-indicator.do { color: #15803D; }
+.voice-indicator.dont { color: #B91C1C; }
+.voice-card-body { padding: var(--sp-5) var(--sp-6); }
+.voice-example {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--ink);
+  font-style: italic;
+  margin-bottom: var(--sp-3);
+}
+.voice-reason { font-size: 10px; color: var(--meta); line-height: 1.6; }
+
+.voice-traits {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-4);
+  margin-top: var(--sp-8);
+}
+.voice-trait {
+  border: 1px solid var(--border);
+  padding: var(--sp-5);
+  border-radius: var(--r-md);
+  text-align: center;
+}
+.voice-trait-icon {
+  font-size: 20px;
+  margin-bottom: var(--sp-2);
+}
+.voice-trait-name {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: var(--sp-1);
+}
+.voice-trait-anti {
+  font-size: 9px;
+  color: var(--meta);
+  letter-spacing: .06em;
+}
+.voice-trait-anti span { text-decoration: line-through; }
+
+/* ════════════════════════════════════════════
+   10 — APLICAÇÕES
+════════════════════════════════════════════ */
+.applications-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.app-cell {
+  background: var(--paper);
+  padding: var(--sp-10) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+.app-cell.dark { background: var(--ink); }
+.app-cell-label {
+  font-size: 9px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--meta);
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--border);
+}
+.app-cell.dark .app-cell-label {
+  color: rgba(255,255,255,.2);
+  border-color: rgba(255,255,255,.06);
+}
+
+/* — Business Card — */
+.biz-card {
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1.75;
+  background: var(--ink);
+  border-radius: var(--r-md);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06),
+    0 20px 60px -10px rgba(10,10,10,.5);
+}
+.biz-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.04);
+}
+.biz-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.biz-card-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+.biz-card-name span { color: var(--slash); }
+.biz-card-role {
+  font-size: 9px;
+  color: rgba(255,255,255,.3);
+  letter-spacing: .08em;
+  margin-top: 3px;
+}
+.biz-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.biz-card-info { font-size: 9px; color: rgba(255,255,255,.3); line-height: 1.8; letter-spacing: .04em; }
+.biz-card-info a { color: rgba(255,255,255,.5); }
+
+/* — GitHub Banner — */
+.gh-banner-wrapper {
+  grid-column: 1 / -1;
+  background: var(--paper);
+  padding: var(--sp-8);
+  border-top: 1px solid var(--border);
+}
+.gh-banner-wrapper .app-cell-label {
+  font-size: 9px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--meta);
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--sp-6);
+}
+.gh-banner {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  background: var(--ink);
+  border-radius: var(--r-md);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06),
+    0 24px 64px -16px rgba(10,10,10,.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(24px, 5%, 64px);
+}
+
+/* grade sutil de fundo */
+.gh-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+/* linha de acento no topo */
+.gh-banner::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--slash) 0%, transparent 60%);
+}
+
+/* círculo decorativo */
+.gh-banner-circle-1 {
+  position: absolute;
+  width: 55%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.04);
+  top: -25%;
+  right: -10%;
+  pointer-events: none;
+}
+.gh-banner-circle-2 {
+  position: absolute;
+  width: 30%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.03);
+  bottom: -20%;
+  right: 15%;
+  pointer-events: none;
+}
+
+.gh-banner-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+.gh-banner-eyebrow {
+  font-size: clamp(8px, 1vw, 11px);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.25);
+  margin-bottom: clamp(8px, 1.5%, 16px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gh-banner-eyebrow::before {
+  content: '';
+  width: 16px; height: 1px;
+  background: var(--slash);
+  opacity: .6;
+}
+.gh-banner-name {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 7%, 72px);
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+.gh-banner-name .slash-col { color: var(--slash); }
+
+.gh-banner-logo-mark {
+  opacity: .12;
+  flex-shrink: 0;
+}
+
+.gh-banner-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+.gh-banner-stack {
+  display: flex;
+  gap: clamp(6px, 1.2%, 16px);
+  flex-wrap: wrap;
+}
+.gh-banner-tag {
+  font-size: clamp(8px, 1vw, 11px);
+  letter-spacing: .1em;
+  color: rgba(255,255,255,.4);
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 4px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.gh-banner-tag.accent {
+  color: #c4d900;
+  border-color: rgba(232,255,0,.25);
+  background: rgba(232,255,0,.05);
+}
+.gh-banner-stats {
+  display: flex;
+  gap: clamp(16px, 3%, 40px);
+  flex-shrink: 0;
+}
+.gh-banner-stat {
+  text-align: right;
+}
+.gh-banner-stat-val {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 3%, 28px);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1;
+}
+.gh-banner-stat-val span { color: var(--slash); }
+.gh-banner-stat-key {
+  font-size: clamp(7px, .8%, 10px);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.2);
+  margin-top: 3px;
+}
+
+/* — Email Signature — */
+.email-sig {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--white);
+  max-width: 420px;
+}
+.email-sig-body {
+  padding: var(--sp-6);
+  display: flex;
+  gap: var(--sp-5);
+  align-items: flex-start;
+}
+.email-sig-divider {
+  width: 2px;
+  align-self: stretch;
+  background: var(--slash);
+  border-radius: var(--r-full);
+  flex-shrink: 0;
+}
+.email-sig-info {}
+.email-sig-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.email-sig-role { font-size: 10px; color: var(--meta); margin-bottom: var(--sp-3); letter-spacing: .04em; }
+.email-sig-links { font-size: 10px; color: var(--meta); line-height: 1.9; }
+.email-sig-links a { color: var(--ink); text-decoration: none; }
+.email-sig-footer {
+  padding: var(--sp-3) var(--sp-6);
+  background: var(--paper);
+  border-top: 1px solid var(--border);
+  font-size: 9px;
+  color: var(--meta);
+  letter-spacing: .06em;
+}
+
+/* — Favicon grid — */
+.favicon-grid {
+  display: flex;
+  gap: var(--sp-4);
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.favicon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.favicon-box {
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 22%;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.favicon-size { font-size: 9px; color: var(--meta); letter-spacing: .06em; }
+
+/* ════════════════════════════════════════════
+   UTILITY
+════════════════════════════════════════════ */
+.mt-8  { margin-top: var(--sp-8); }
+.mt-6  { margin-top: var(--sp-6); }
+.mt-10 { margin-top: var(--sp-10); }
+.gap-4 { gap: var(--sp-4); }
+.fw { width: 100%; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.ai-c { align-items: center; }
+.jc-sb { justify-content: space-between; }
+.g-4 { gap: var(--sp-4); }
+.g-3 { gap: var(--sp-3); }
+.g-2 { gap: var(--sp-2); }
+.g-6 { gap: var(--sp-6); }
+
+/* ─ responsive ─ */
+@media (max-width: 900px) {
+  .ds-nav { padding: 0 var(--sp-6); }
+  .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: var(--sp-16) var(--sp-6); }
+  .hero-logo-showcase { align-items: center; }
+  .logo-hero-wrap { max-width: 280px; }
+  .ds-section { padding: var(--sp-16) var(--sp-6); }
+  .comp-grid, .logo-grid, .voice-grid,
+  .applications-grid, .color-system { grid-template-columns: 1fr; }
+  .motion-grid { grid-template-columns: 1fr; }
+  .icon-grid { grid-template-columns: repeat(4, 1fr); }
+  .voice-traits { grid-template-columns: 1fr 1fr; }
+  .type-scale-row { grid-template-columns: 60px 1fr; }
+  .type-scale-row .type-scale-size,
+  .type-scale-row .type-scale-weight { display: none; }
+  .hero-stats { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════ -->
+<nav class="ds-nav">
+  <div class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg width="28" height="20" viewBox="0 0 28 20" fill="none">
+        <rect x="0" y="0" width="5" height="20" fill="white"/>
+        <rect x="5" y="0" width="10" height="4" fill="white"/>
+        <rect x="5" y="8" width="8" height="4" fill="white"/>
+        <rect x="5" y="16" width="10" height="4" fill="white"/>
+        <polygon points="18,16 18,20 26,20 26,16" fill="#E8FF00" opacity=".9"/>
+        <circle cx="24" cy="16" r="3" fill="white"/>
+      </svg>
+    </div>
+    <span class="nav-brand">evandro<span>.dev.br</span></span>
+  </div>
+
+  <ul class="nav-links">
+    <li><a href="#logo">Logo</a></li>
+    <li><a href="#cores">Cores</a></li>
+    <li><a href="#tipografia">Tipo</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+    <li><a href="#componentes">Components</a></li>
+    <li><a href="#icones">Ícones</a></li>
+    <li><a href="#motion">Motion</a></li>
+    <li><a href="#voice">Voice</a></li>
+    <li><a href="#aplicacoes">Apps</a></li>
+  </ul>
+
+  <span class="nav-version">v1.0 — 2026</span>
+</nav>
+
+<main class="ds-main">
+
+<!-- ════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow">
+      <span class="hero-dot"></span>
+      Design System Completo
+    </div>
+    <h1 class="hero-h1">
+      evandro<br>
+      <span class="slash-accent">.dev</span><br>
+      .br
+    </h1>
+    <p class="hero-tagline">
+      Sistema de identidade visual e componentes para uma empresa de programação. Cada elemento é intencionalmente destilado até seu essencial.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-val">4<span>px</span></div>
+        <div class="hero-stat-key">Base unit</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">9<span>×</span></div>
+        <div class="hero-stat-key">Type scale</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">4<span>+</span></div>
+        <div class="hero-stat-key">Tokens cor</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-logo-showcase">
+    <div class="logo-hero-wrap">
+      <svg width="280" height="200" viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- E principal -->
+        <rect x="42" y="36" width="22" height="128" fill="white"/>
+        <rect x="64" y="36" width="68" height="22" fill="white"/>
+        <rect x="64" y="89" width="52" height="22" fill="white"/>
+        <rect x="64" y="142" width="68" height="22" fill="white"/>
+        <!-- Slash diagonal -->
+        <polygon points="142,136 158,136 196,64 180,64" fill="#E8FF00"/>
+        <!-- Ponto .dev -->
+        <circle cx="214" cy="148" r="14" fill="white"/>
+      </svg>
+    </div>
+    <div class="logo-hero-annotation">D — Slash Mark · Conceito final</div>
+    <div class="logo-hero-annotation">Escala: 280×200 · Viewbox</div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     01 — LOGO SYSTEM
+════════════════════════════════════════════ -->
+<section class="ds-section" id="logo">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">01 — Identidade</div>
+      <h2 class="section-title">Logo System</h2>
+      <p class="section-desc">O Slash Mark em todas as variações, fundos e escalas de uso permitidas.</p>
+    </div>
+  </div>
+
+  <!-- variantes -->
+  <div class="logo-grid">
+
+    <!-- Dark bg: logo white + accent -->
+    <div class="logo-variant on-dark">
+      <svg width="120" height="80" viewBox="0 0 120 80" fill="none">
+        <rect x="10" y="8" width="9" height="64" fill="white"/>
+        <rect x="19" y="8" width="28" height="9" fill="white"/>
+        <rect x="19" y="35.5" width="22" height="9" fill="white"/>
+        <rect x="19" y="63" width="28" height="9" fill="white"/>
+        <polygon points="50,55 57,55 74,25 67,25" fill="#E8FF00"/>
+        <circle cx="80" cy="63" r="7" fill="white"/>
+      </svg>
+      <div class="logo-variant-label">Fundo Escuro · Principal</div>
+    </div>
+
+    <!-- Light bg: logo dark -->
+    <div class="logo-variant">
+      <svg width="120" height="80" viewBox="0 0 120 80" fill="none">
+        <rect x="10" y="8" width="9" height="64" fill="#0A0A0A"/>
+        <rect x="19" y="8" width="28" height="9" fill="#0A0A0A"/>
+        <rect x="19" y="35.5" width="22" height="9" fill="#0A0A0A"/>
+        <rect x="19" y="63" width="28" height="9" fill="#0A0A0A"/>
+        <polygon points="50,55 57,55 74,25 67,25" fill="#0A0A0A"/>
+        <circle cx="80" cy="63" r="7" fill="#0A0A0A"/>
+      </svg>
+      <div class="logo-variant-label">Fundo Claro · Secundário</div>
+    </div>
+
+    <!-- Accent bg: logo dark -->
+    <div class="logo-variant on-slash">
+      <svg width="120" height="80" viewBox="0 0 120 80" fill="none">
+        <rect x="10" y="8" width="9" height="64" fill="#0A0A0A"/>
+        <rect x="19" y="8" width="28" height="9" fill="#0A0A0A"/>
+        <rect x="19" y="35.5" width="22" height="9" fill="#0A0A0A"/>
+        <rect x="19" y="63" width="28" height="9" fill="#0A0A0A"/>
+        <polygon points="50,55 57,55 74,25 67,25" fill="rgba(0,0,0,.3)"/>
+        <circle cx="80" cy="63" r="7" fill="#0A0A0A"/>
+      </svg>
+      <div class="logo-variant-label">Fundo Acento · Evento</div>
+    </div>
+
+    <!-- Wordmark horizontal dark -->
+    <div class="logo-variant on-dark">
+      <div class="logo-wordmark">
+        <svg width="48" height="32" viewBox="0 0 48 32" fill="none">
+          <rect x="2" y="2" width="7" height="28" fill="white"/>
+          <rect x="9" y="2" width="20" height="7" fill="white"/>
+          <rect x="9" y="12.5" width="16" height="7" fill="white"/>
+          <rect x="9" y="23" width="20" height="7" fill="white"/>
+          <polygon points="30,22 34,22 42,10 38,10" fill="#E8FF00"/>
+          <circle cx="44" cy="25" r="4" fill="white"/>
+        </svg>
+        <div>
+          <div class="logo-wordmark-text" style="color:white">evandro<span class="dot">.</span>dev<span class="dot">.</span>br</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.25);letter-spacing:.1em;margin-top:3px;">DESENVOLVIMENTO DE SOFTWARE</div>
+        </div>
+      </div>
+      <div class="logo-variant-label">Horizontal com Tagline</div>
+    </div>
+
+    <!-- Icon only dark, icon only light, icon only slash -->
+    <div class="logo-variant" style="background:#1A1A1A;">
+      <div style="display:flex;gap:24px;align-items:center;">
+        <!-- 64px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect width="64" height="64" rx="14" fill="#0A0A0A"/>
+            <rect x="10" y="10" width="7" height="44" fill="white"/>
+            <rect x="17" y="10" width="18" height="7" fill="white"/>
+            <rect x="17" y="28.5" width="14" height="7" fill="white"/>
+            <rect x="17" y="47" width="18" height="7" fill="white"/>
+            <polygon points="37,38 41,38 50,26 46,26" fill="#E8FF00"/>
+            <circle cx="52" cy="47" r="5" fill="white"/>
+          </svg>
+          <span style="font-size:8px;color:rgba(255,255,255,.2);">64px</span>
+        </div>
+        <!-- 32px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+            <rect width="64" height="64" rx="14" fill="#0A0A0A"/>
+            <rect x="10" y="10" width="7" height="44" fill="white"/>
+            <rect x="17" y="10" width="18" height="7" fill="white"/>
+            <rect x="17" y="28.5" width="14" height="7" fill="white"/>
+            <rect x="17" y="47" width="18" height="7" fill="white"/>
+            <polygon points="37,38 41,38 50,26 46,26" fill="#E8FF00"/>
+            <circle cx="52" cy="47" r="5" fill="white"/>
+          </svg>
+          <span style="font-size:8px;color:rgba(255,255,255,.2);">32px</span>
+        </div>
+        <!-- 16px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 64 64" fill="none">
+            <rect width="64" height="64" rx="14" fill="#0A0A0A"/>
+            <rect x="10" y="10" width="7" height="44" fill="white"/>
+            <rect x="17" y="10" width="18" height="7" fill="white"/>
+            <rect x="17" y="28.5" width="14" height="7" fill="white"/>
+            <rect x="17" y="47" width="18" height="7" fill="white"/>
+            <polygon points="37,38 41,38 50,26 46,26" fill="#E8FF00"/>
+            <circle cx="52" cy="47" r="5" fill="white"/>
+          </svg>
+          <span style="font-size:8px;color:rgba(255,255,255,.2);">16px</span>
+        </div>
+      </div>
+      <div class="logo-variant-label">Símbolo — Escalas de ícone</div>
+    </div>
+
+    <!-- Clearspace / proibições -->
+    <div class="logo-variant">
+      <div class="clearspace-demo" style="padding:32px;border:1px dashed rgba(10,10,10,.15);">
+        <span class="clearspace-arrow top">↕ X</span>
+        <span class="clearspace-arrow right">X ↔</span>
+        <svg width="80" height="56" viewBox="0 0 120 80" fill="none">
+          <rect x="10" y="8" width="9" height="64" fill="#0A0A0A"/>
+          <rect x="19" y="8" width="28" height="9" fill="#0A0A0A"/>
+          <rect x="19" y="35.5" width="22" height="9" fill="#0A0A0A"/>
+          <rect x="19" y="63" width="28" height="9" fill="#0A0A0A"/>
+          <polygon points="50,55 57,55 74,25 67,25" fill="#0A0A0A"/>
+          <circle cx="80" cy="63" r="7" fill="#0A0A0A"/>
+        </svg>
+      </div>
+      <div class="logo-variant-label">Clearspace = altura do "E"</div>
+    </div>
+
+  </div>
+
+  <!-- Anatomia -->
+  <div class="logo-anatomy">
+    <div style="display:flex;align-items:center;justify-content:center;padding:40px;border:1px solid var(--border-light);position:relative;">
+      <svg width="220" height="160" viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="42" y="36" width="22" height="128" fill="#0A0A0A"/>
+        <rect x="64" y="36" width="68" height="22" fill="#0A0A0A"/>
+        <rect x="64" y="89" width="52" height="22" fill="#0A0A0A"/>
+        <rect x="64" y="142" width="68" height="22" fill="#0A0A0A"/>
+        <polygon points="142,136 158,136 196,64 180,64" fill="#E8FF00"/>
+        <circle cx="214" cy="148" r="14" fill="#0A0A0A"/>
+        <!-- annotation lines -->
+        <line x1="42" y1="30" x2="132" y2="30" stroke="#888" stroke-width="0.5" stroke-dasharray="3,3"/>
+        <text x="87" y="26" fill="#888" font-size="8" text-anchor="middle" font-family="'Geist Mono',monospace">01</text>
+        <line x1="200" y1="64" x2="230" y2="50" stroke="#888" stroke-width="0.5" stroke-dasharray="3,3"/>
+        <text x="238" y="48" fill="#E8FF00" font-size="8" text-anchor="start" font-family="'Geist Mono',monospace">02</text>
+        <line x1="214" y1="164" x2="240" y2="178" stroke="#888" stroke-width="0.5" stroke-dasharray="3,3"/>
+        <text x="244" y="180" fill="#888" font-size="8" text-anchor="start" font-family="'Geist Mono',monospace">03</text>
+      </svg>
+    </div>
+    <div class="anatomy-rules">
+      <div class="section-eyebrow" style="margin-bottom:16px;">Anatomia do Símbolo</div>
+      <div class="anatomy-rule">
+        <div class="anatomy-rule-num">01</div>
+        <div class="anatomy-rule-text"><strong>E Estrutural</strong> — A letra E com proporções 1:1 em grid de 8px. Representa o nome Evandro e a estrutura do código.</div>
+      </div>
+      <div class="anatomy-rule">
+        <div class="anatomy-rule-num">02</div>
+        <div class="anatomy-rule-text"><strong>Slash Diagonal</strong> — O "/" de URL/path em amarelo-code (#E8FF00). Representa o caminho, a execução, a navegação técnica.</div>
+      </div>
+      <div class="anatomy-rule">
+        <div class="anatomy-rule-num">03</div>
+        <div class="anatomy-rule-text"><strong>Ponto Terminal</strong> — Círculo que referencia o ".dev" do domínio. O ponto final de toda instrução executada.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     02 — CORES
+════════════════════════════════════════════ -->
+<section class="ds-section" id="cores">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">02 — Cores</div>
+      <h2 class="section-title">Color Tokens</h2>
+      <p class="section-desc">Sistema semântico de tokens. Cada cor tem papel único — nada é decorativo.</p>
+    </div>
+  </div>
+
+  <div class="color-system">
+    <div>
+      <div class="color-group-title">Primários</div>
+      <div class="color-tokens">
+        <div class="color-token">
+          <div class="color-swatch-box" style="background:#0A0A0A;"></div>
+          <div><div class="color-token-name">--ink</div><div class="color-token-val">#0A0A0A</div></div>
+          <div class="color-token-use">Logo · Texto · UI</div>
+        </div>
+        <div class="color-token">
+          <div class="color-swatch-box" style="background:#F4F2ED;border-color:rgba(0,0,0,.15);"></div>
+          <div><div class="color-token-name">--paper</div><div class="color-token-val">#F4F2ED</div></div>
+          <div class="color-token-use">Fundo primário</div>
+        </div>
+        <div class="color-token">
+          <div class="color-swatch-box" style="background:#FFFFFF;border-color:rgba(0,0,0,.15);"></div>
+          <div><div class="color-token-name">--white</div><div class="color-token-val">#FFFFFF</div></div>
+          <div class="color-token-use">Texto em dark</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="color-group-title">Acento & Estado</div>
+      <div class="color-tokens">
+        <div class="color-token">
+          <div class="color-swatch-box" style="background:#E8FF00;border-color:rgba(0,0,0,.1);"></div>
+          <div><div class="color-token-name">--slash</div><div class="color-token-val">#E8FF00</div></div>
+          <div class="color-token-use">Acento · Logo · CTA</div>
+        </div>
+        <div class="color-token">
+          <div class="color-swatch-box" style="background:#777;"></div>
+          <div><div class="color-token-name">--meta</div><div class="color-token-val">#777777</div></div>
+          <div class="color-token-use">Texto secundário</div>
+        </div>
+        <div class="color-token">
+          <div class="color-swatch-box" style="background:rgba(10,10,10,.1);border-color:rgba(0,0,0,.12);"></div>
+          <div><div class="color-token-name">--border</div><div class="color-token-val">rgba(10,10,10,.10)</div></div>
+          <div class="color-token-use">Divisores · Bordas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-10">
+    <div class="color-group-title" style="margin-bottom:12px;">Gradiente de Opacidade — --ink</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;border:1px solid var(--border);overflow:hidden;">
+      <div style="height:60px;background:rgba(10,10,10,1);display:flex;align-items:flex-end;padding:8px;font-size:9px;color:rgba(255,255,255,.5);">100%</div>
+      <div style="height:60px;background:rgba(10,10,10,.8);display:flex;align-items:flex-end;padding:8px;font-size:9px;color:rgba(255,255,255,.5);">80%</div>
+      <div style="height:60px;background:rgba(10,10,10,.4);display:flex;align-items:flex-end;padding:8px;font-size:9px;color:var(--meta);">40%</div>
+      <div style="height:60px;background:rgba(10,10,10,.12);display:flex;align-items:flex-end;padding:8px;font-size:9px;color:var(--meta);">12%</div>
+      <div style="height:60px;background:rgba(10,10,10,.06);display:flex;align-items:flex-end;padding:8px;font-size:9px;color:var(--meta);">6%</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     03 — TIPOGRAFIA
+════════════════════════════════════════════ -->
+<section class="ds-section dark" id="tipografia">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">03 — Tipografia</div>
+      <h2 class="section-title">Type System</h2>
+      <p class="section-desc">Duas famílias, nove tamanhos, um sistema semântico claro.</p>
+    </div>
+  </div>
+
+  <div class="type-scale">
+    <div class="type-scale-row header">
+      <div>Token</div><div>Amostra</div><div>Tamanho</div><div>Peso</div>
+    </div>
+    <div class="type-scale-row">
+      <div class="type-scale-token">--display-2xl</div>
+      <div class="type-scale-sample" style="font-family:'Syne',sans-serif;font-size:clamp(40px,5vw,72px);font-weight:800;line-height:1;letter-spacing:-0.03em;">Ev/</div>
+      <div class="type-scale-size">clamp(40,72px)</div>
+      <div class="type-scale-weight">800</div>
+    </div>
+    <div class="type-scale-row">
+      <div class="type-scale-token">--display-xl</div>
+      <div class="type-scale-sample" style="font-family:'Syne',sans-serif;font-size:48px;font-weight:800;line-height:1.05;letter-spacing:-0.025em;">Build. Ship. Scale.</div>
+      <div class="type-scale-size">48px</div>
+      <div class="type-scale-weight">800</div>
+    </div>
+    <div class="type-scale-row">
+      <div class="type-scale-token">--display-lg</div>
+      <div class="type-scale-sample" style="font-family:'Syne',sans-serif;font-size:32px;font-weight:700;line-height:1.1;">Produtos que escalam</div>
+      <div class="type-scale-size">32px</div>
+      <div class="type-scale-weight">700</div>
+    </div>
+    <div class="type-scale-row">
+      <div class="type-scale-token">--heading-md</div>
+      <div class="type-scale-sample" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;">Arquitetura de Software</div>
+      <div class="type-scale-size">22px</div>
+      <div class="type-scale-weight">700</div>
+    </div>
+    <div class="type-scale-row">
+      <div class="type-scale-token">--heading-sm</div>
+      <div class="type-scale-sample" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:600;">Componentes & APIs</div>
+      <div class="type-scale-size">16px</div>
+      <div class="type-scale-weight">600</div>
+    </div>
+    <div class="type-scale-row">
+      <div class="type-scale-token">--body-lg</div>
+      <div class="type-scale-sample" style="font-family:'Geist Mono',monospace;font-size:14px;">Construímos software com propósito e precisão.</div>
+      <div class="type-scale-size">14px</div>
+      <div class="type-scale-weight">400</div>
+    </div>
+    <div class="type-scale-row">
+      <div class="type-scale-token">--body-md</div>
+      <div class="type-scale-sample" style="font-family:'Geist Mono',monospace;font-size:12px;">Da arquitetura ao deploy. TypeScript, React, Node.</div>
+      <div class="type-scale-size">12px</div>
+      <div class="type-scale-weight">400</div>
+    </div>
+    <div class="type-scale-row">
+      <div class="type-scale-token">--label</div>
+      <div class="type-scale-sample" style="font-family:'Geist Mono',monospace;font-size:10px;color:#888;">FULL-STACK DEVELOPMENT</div>
+      <div class="type-scale-size">10px</div>
+      <div class="type-scale-weight">500</div>
+    </div>
+    <div class="type-scale-row">
+      <div class="type-scale-token">--meta</div>
+      <div class="type-scale-sample" style="font-family:'Geist Mono',monospace;font-size:9px;color:#888;letter-spacing:.1em;text-transform:uppercase;">v1.0 · MIT · 2026</div>
+      <div class="type-scale-size">9px</div>
+      <div class="type-scale-weight">400–500</div>
+    </div>
+  </div>
+
+  <div class="mt-10">
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots">
+          <div class="code-dot cd-r"></div>
+          <div class="code-dot cd-y"></div>
+          <div class="code-dot cd-g"></div>
+        </div>
+        <div class="code-filename">evandro.config.ts</div>
+      </div>
+      <pre class="code-body"><span class="c-comment">// Configuração de tipografia — evandro.dev.br</span>
+<span class="c-keyword">import</span> <span class="c-var">type</span> { <span class="c-type">Config</span> } <span class="c-keyword">from</span> <span class="c-string">'tailwindcss'</span>
+
+<span class="c-keyword">export const</span> <span class="c-fn">typography</span> = {
+  fonts: {
+    display: <span class="c-string">'Syne'</span>,    <span class="c-comment">// Títulos, logo, hero</span>
+    mono:    <span class="c-string">'Geist Mono'</span> <span class="c-comment">// Corpo, UI, código</span>
+  },
+  scale: {
+    <span class="c-string">'display-2xl'</span>: <span class="c-string">'clamp(40px, 5vw, 72px)'</span>,
+    <span class="c-string">'display-xl'</span>:  <span class="c-string">'48px'</span>,
+    <span class="c-string">'display-lg'</span>:  <span class="c-string">'32px'</span>,
+    <span class="c-string">'heading-md'</span>:  <span class="c-string">'22px'</span>,
+    <span class="c-string">'body-md'</span>:     <span class="c-string">'12px'</span>,
+    <span class="c-string">'label'</span>:       <span class="c-string">'10px'</span>,
+  }
+} <span class="c-keyword">satisfies</span> <span class="c-type">Partial</span>&lt;<span class="c-type">Config</span>&gt;</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     04 — SPACING
+════════════════════════════════════════════ -->
+<section class="ds-section" id="spacing">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">04 — Espaçamento</div>
+      <h2 class="section-title">Spacing Scale</h2>
+      <p class="section-desc">Base 4px. Cada token tem um papel semântico no layout — não são intercambiáveis.</p>
+    </div>
+  </div>
+
+  <div class="spacing-scale">
+    <div class="spacing-row" style="background:var(--ink);color:rgba(255,255,255,.4);font-size:9px;letter-spacing:.14em;text-transform:uppercase;">
+      <div>Token</div><div>Visual</div><div>px</div><div>Uso</div>
+    </div>
+    <div class="spacing-row"><div class="spacing-token">--sp-1</div><div><div class="spacing-bar" style="width:4px;"></div></div><div class="spacing-px">4px</div><div class="spacing-use">Gap micro</div></div>
+    <div class="spacing-row"><div class="spacing-token">--sp-2</div><div><div class="spacing-bar" style="width:8px;"></div></div><div class="spacing-px">8px</div><div class="spacing-use">Gap ícone</div></div>
+    <div class="spacing-row"><div class="spacing-token">--sp-3</div><div><div class="spacing-bar" style="width:12px;"></div></div><div class="spacing-px">12px</div><div class="spacing-use">Gap interno</div></div>
+    <div class="spacing-row"><div class="spacing-token">--sp-4</div><div><div class="spacing-bar" style="width:16px;"></div></div><div class="spacing-px">16px</div><div class="spacing-use">Padding btn</div></div>
+    <div class="spacing-row"><div class="spacing-token">--sp-6</div><div><div class="spacing-bar" style="width:24px;"></div></div><div class="spacing-px">24px</div><div class="spacing-use">Padding card</div></div>
+    <div class="spacing-row"><div class="spacing-token">--sp-8</div><div><div class="spacing-bar" style="width:32px;"></div></div><div class="spacing-px">32px</div><div class="spacing-use">Gap seção</div></div>
+    <div class="spacing-row"><div class="spacing-token">--sp-12</div><div><div class="spacing-bar" style="width:48px;"></div></div><div class="spacing-px">48px</div><div class="spacing-use">Padding section</div></div>
+    <div class="spacing-row"><div class="spacing-token">--sp-16</div><div><div class="spacing-bar" style="width:64px;"></div></div><div class="spacing-px">64px</div><div class="spacing-use">Padding layout</div></div>
+    <div class="spacing-row"><div class="spacing-token">--sp-20</div><div><div class="spacing-bar" style="width:80px;"></div></div><div class="spacing-px">80px</div><div class="spacing-use">Hero sections</div></div>
+    <div class="spacing-row"><div class="spacing-token">--sp-24</div><div><div class="spacing-bar" style="width:96px;"></div></div><div class="spacing-px">96px</div><div class="spacing-use">Section header</div></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     05 — COMPONENTS
+════════════════════════════════════════════ -->
+<section class="ds-section dark" id="componentes">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">05 — Componentes</div>
+      <h2 class="section-title">Component Library</h2>
+      <p class="section-desc">Todos os primitivos de UI. Hover nos componentes para ver as interações.</p>
+    </div>
+  </div>
+
+  <div class="comp-grid">
+
+    <!-- BOTÕES -->
+    <div class="comp-cell">
+      <div class="comp-cell-label">Buttons — Variantes</div>
+      <div class="comp-row">
+        <button class="btn btn-primary">Contratar</button>
+        <button class="btn btn-slash">Ver projetos</button>
+        <button class="btn btn-outline">GitHub</button>
+        <button class="btn btn-ghost">Cancelar</button>
+      </div>
+      <div class="comp-row">
+        <button class="btn btn-primary btn-sm">Small</button>
+        <button class="btn btn-primary">Default</button>
+        <button class="btn btn-primary btn-lg">Large</button>
+      </div>
+      <div class="comp-row">
+        <button class="btn btn-primary btn-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <button class="btn btn-slash btn-icon btn-lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button class="btn btn-outline btn-icon btn-sm">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="comp-cell dark">
+      <div class="comp-cell-label">Buttons — Dark Mode</div>
+      <div class="comp-row">
+        <button class="btn btn-slash">Deploy agora</button>
+        <button class="btn btn-outline-white">Ver código</button>
+        <button class="btn btn-ghost-white">Fechar</button>
+      </div>
+      <div class="comp-row">
+        <button class="btn btn-primary btn-sm" style="background:white;color:#0A0A0A;box-shadow:0 0 0 1px white;">Branco</button>
+        <button class="btn btn-outline-white btn-sm">Outline</button>
+        <button class="btn btn-ghost-white btn-sm">Ghost</button>
+      </div>
+    </div>
+
+    <!-- BADGES -->
+    <div class="comp-cell">
+      <div class="comp-cell-label">Badges & Tags</div>
+      <div class="comp-row">
+        <span class="badge badge-default">Default</span>
+        <span class="badge badge-slash badge-dot">Online</span>
+        <span class="badge badge-success badge-dot">Entregue</span>
+        <span class="badge badge-error badge-dot">Erro</span>
+      </div>
+      <div class="comp-row" style="flex-wrap:wrap;gap:8px;margin-top:12px;">
+        <span class="tag">React</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">Node.js</span>
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">Docker</span>
+        <span class="tag">AWS</span>
+      </div>
+    </div>
+
+    <!-- INPUTS -->
+    <div class="comp-cell">
+      <div class="comp-cell-label">Form Inputs</div>
+      <div class="input-wrap">
+        <div class="input-label">Seu email</div>
+        <input class="input" type="email" placeholder="voce@empresa.com.br">
+      </div>
+      <div class="input-wrap">
+        <div class="input-label">URL do projeto</div>
+        <div class="input-prefix-wrap">
+          <span class="input-prefix">https://</span>
+          <input class="input" type="text" placeholder="evandro.dev.br">
+        </div>
+      </div>
+      <textarea class="textarea" placeholder="Descreva seu projeto..."></textarea>
+    </div>
+
+    <!-- CARDS -->
+    <div class="comp-cell" style="grid-column:span 2;">
+      <div class="comp-cell-label">Cards</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Desenvolvimento</div>
+              <div class="card-subtitle">Full-stack · React · Node</div>
+            </div>
+          </div>
+          <div class="card-body">Construção de produtos digitais do zero, com arquitetura escalável e código de qualidade.</div>
+          <div class="card-footer">
+            <span class="badge badge-success badge-dot">Disponível</span>
+            <button class="btn btn-ghost btn-sm">Ver →</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon" style="background:var(--slash);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            </div>
+            <div>
+              <div class="card-title">Design System</div>
+              <div class="card-subtitle">UI Kit · Tokens · Docs</div>
+            </div>
+          </div>
+          <div class="card-body">Criação de sistemas de design escaláveis com documentação e componentes reutilizáveis.</div>
+          <div class="card-footer">
+            <span class="badge badge-slash badge-dot">Novo</span>
+            <button class="btn btn-ghost btn-sm">Ver →</button>
+          </div>
+        </div>
+
+        <div class="card" style="background:var(--ink);border-color:rgba(255,255,255,.08);">
+          <div class="card-header" style="border-color:rgba(255,255,255,.06);">
+            <div class="card-icon" style="background:rgba(255,255,255,.08);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div>
+              <div class="card-title" style="color:white;">Performance</div>
+              <div class="card-subtitle">Core Web Vitals · SEO</div>
+            </div>
+          </div>
+          <div class="card-body" style="color:rgba(255,255,255,.4);">Otimização de performance com foco em métricas reais de usuário e SEO técnico avançado.</div>
+          <div class="card-footer" style="border-color:rgba(255,255,255,.06);">
+            <span class="badge" style="background:rgba(232,255,0,.1);color:#c4d900;box-shadow:inset 0 0 0 1px rgba(232,255,0,.2);" >⚡ Fast</span>
+            <button class="btn btn-ghost-white btn-sm">Ver →</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TOGGLES + PROGRESS -->
+    <div class="comp-cell">
+      <div class="comp-cell-label">Toggles & Progress</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="toggle-wrap">
+          <div class="toggle on"></div>
+          <span class="toggle-label">Dark mode ativo</span>
+        </div>
+        <div class="toggle-wrap">
+          <div class="toggle slash"></div>
+          <span class="toggle-label">Notificações (acento)</span>
+        </div>
+        <div class="toggle-wrap">
+          <div class="toggle"></div>
+          <span class="toggle-label" style="color:var(--meta);">Inativo</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+        <div class="progress-wrap">
+          <div class="progress-header"><span class="progress-name">TypeScript</span><span class="progress-val">95%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:95%;"></div></div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-header"><span class="progress-name">React / Next.js</span><span class="progress-val">92%</span></div>
+          <div class="progress-bar"><div class="progress-fill accent" style="width:92%;"></div></div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-header"><span class="progress-name">Node / Bun</span><span class="progress-val">88%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:88%;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="comp-cell">
+      <div class="comp-cell-label">Notificações & Skeleton</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="notification">
+          <div class="notif-icon success">✓</div>
+          <div><div class="notif-title">Deploy concluído</div><div class="notif-msg">evandro.dev.br em produção às 14:32</div></div>
+        </div>
+        <div class="notification">
+          <div class="notif-icon warn">!</div>
+          <div><div class="notif-title">Build com warning</div><div class="notif-msg">2 dependências desatualizadas</div></div>
+        </div>
+        <div class="notification">
+          <div class="notif-icon error">✕</div>
+          <div><div class="notif-title">Erro no pipeline</div><div class="notif-msg">Tests falharam em 3 arquivos</div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+        <div class="skeleton" style="height:14px;width:60%;"></div>
+        <div class="skeleton" style="height:14px;width:80%;"></div>
+        <div class="skeleton" style="height:14px;width:45%;"></div>
+        <div class="skeleton" style="height:40px;border-radius:var(--r-md);margin-top:4px;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tabela de tokens de componentes -->
+  <div class="mt-10">
+    <div class="section-eyebrow" style="margin-bottom:16px;color:rgba(255,255,255,.3);">Tokens de Componentes</div>
+    <table class="ds-table">
+      <thead>
+        <tr>
+          <th>Componente</th>
+          <th>Token</th>
+          <th>Valor</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Button</td><td class="td-token">--btn-h-default</td><td class="td-meta">40px</td><td><span class="badge badge-success">Estável</span></td></tr>
+        <tr><td>Button</td><td class="td-token">--btn-h-sm</td><td class="td-meta">32px</td><td><span class="badge badge-success">Estável</span></td></tr>
+        <tr><td>Button</td><td class="td-token">--btn-h-lg</td><td class="td-meta">52px</td><td><span class="badge badge-success">Estável</span></td></tr>
+        <tr><td>Input</td><td class="td-token">--input-h</td><td class="td-meta">40px</td><td><span class="badge badge-success">Estável</span></td></tr>
+        <tr><td>Card</td><td class="td-token">--card-radius</td><td class="td-meta">8px</td><td><span class="badge badge-success">Estável</span></td></tr>
+        <tr><td>Badge</td><td class="td-token">--badge-radius</td><td class="td-meta">999px</td><td><span class="badge badge-success">Estável</span></td></tr>
+        <tr><td>Tooltip</td><td class="td-token">--tooltip-delay</td><td class="td-meta">300ms</td><td><span class="badge badge-slash">Beta</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     06 — ICONOGRAFIA
+════════════════════════════════════════════ -->
+<section class="ds-section" id="icones">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">06 — Iconografia</div>
+      <h2 class="section-title">Icon Style</h2>
+      <p class="section-desc">Estilo: Stroke 1.5px, corners arredondados, 24×24 viewport. Hover para ver interação.</p>
+    </div>
+  </div>
+
+  <div class="icon-grid">
+    <!-- Row 1: dev icons -->
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span class="icon-name">code</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><span class="icon-name">package</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41"/><path d="M4.93 4.93l1.41 1.41"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M20 12h2"/><path d="M2 12h2"/><path d="M19.07 19.07l-1.41-1.41"/><path d="M4.93 19.07l1.41-1.41"/></svg><span class="icon-name">api</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="icon-name">perf</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span class="icon-name">deploy</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg><span class="icon-name">git</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 9H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5S16.33 9 15.5 9z"/><path d="M10 9.5c0-.83-.67-1.5-1.5-1.5h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 15H10v-1.5c0-.83-.67-1.5-1.5-1.5S7 12.67 7 13.5 7.67 15 8.5 15z"/></svg><span class="icon-name">slack</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="icon-name">security</span></div>
+    <!-- Row 2 -->
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="icon-name">time</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="icon-name">add</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span class="icon-name">check</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span class="icon-name">search</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg><span class="icon-name">coffee</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg><span class="icon-name">arrow</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg><span class="icon-name">layout</span></div>
+    <div class="icon-cell"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M20 12h2M2 12h2M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41"/></svg><span class="icon-name">light</span></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     07 — MOTION
+════════════════════════════════════════════ -->
+<section class="ds-section" id="motion">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">07 — Animação</div>
+      <h2 class="section-title">Motion System</h2>
+      <p class="section-desc">Hover nos cards para ver as animações. Motion não é decoração — tem semântica.</p>
+    </div>
+  </div>
+
+  <div class="motion-grid">
+    <div class="motion-cell">
+      <div class="motion-demo-box motion-fade"></div>
+      <div class="motion-label">Fade · Entrada/Saída</div>
+      <div class="motion-spec">opacity · 400ms ease-out</div>
+    </div>
+    <div class="motion-cell">
+      <div class="motion-demo-box motion-slide"></div>
+      <div class="motion-label">Slide · Navegação</div>
+      <div class="motion-spec">transform · 400ms ease-out</div>
+    </div>
+    <div class="motion-cell">
+      <div class="motion-demo-box motion-scale"></div>
+      <div class="motion-label">Scale · Micro-interação</div>
+      <div class="motion-spec">scale + rotate · 400ms spring</div>
+    </div>
+  </div>
+
+  <div class="mt-10">
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
+        <div class="code-filename">motion.config.ts</div>
+      </div>
+      <pre class="code-body"><span class="c-comment">// Curvas de easing do sistema — nunca use ease padrão do CSS</span>
+<span class="c-keyword">export const</span> <span class="c-var">easing</span> = {
+  <span class="c-comment">// Entradas de UI — sensação de gravidade natural</span>
+  out:    <span class="c-string">'cubic-bezier(.16, 1, .3, 1)'</span>,
+  <span class="c-comment">// Saídas — rápido para não bloquear o usuário</span>
+  <span class="c-keyword">in</span>:     <span class="c-string">'cubic-bezier(.4, 0, 1, 1)'</span>,
+  <span class="c-comment">// Micro-interações críticas (botão, link)</span>
+  spring: <span class="c-string">'cubic-bezier(.34, 1.56, .64, 1)'</span>,
+}
+
+<span class="c-keyword">export const</span> <span class="c-var">duration</span> = {
+  instant: <span class="c-num">100</span>,  <span class="c-comment">// hover state</span>
+  fast:    <span class="c-num">200</span>,  <span class="c-comment">// botões, toggles</span>
+  normal:  <span class="c-num">350</span>,  <span class="c-comment">// modais, drawers</span>
+  slow:    <span class="c-num">600</span>,  <span class="c-comment">// page transitions</span>
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     08 — BRAND VOICE
+════════════════════════════════════════════ -->
+<section class="ds-section dark" id="voice">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">08 — Voz da Marca</div>
+      <h2 class="section-title">Brand Voice</h2>
+      <p class="section-desc">Como a marca fala. Tom técnico, direto, sem ego. Como o melhor dev sênior que você conhece.</p>
+    </div>
+  </div>
+
+  <div class="voice-traits">
+    <div class="voice-trait" style="background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.07);">
+      <div class="voice-trait-icon">⚡</div>
+      <div class="voice-trait-name" style="color:white;">Direto</div>
+      <div class="voice-trait-anti" style="color:rgba(255,255,255,.25);">Não: <span>prolixo</span></div>
+    </div>
+    <div class="voice-trait" style="background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.07);">
+      <div class="voice-trait-icon">🧠</div>
+      <div class="voice-trait-name" style="color:white;">Técnico</div>
+      <div class="voice-trait-anti" style="color:rgba(255,255,255,.25);">Não: <span>vago</span></div>
+    </div>
+    <div class="voice-trait" style="background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.07);">
+      <div class="voice-trait-icon">🤝</div>
+      <div class="voice-trait-name" style="color:white;">Honesto</div>
+      <div class="voice-trait-anti" style="color:rgba(255,255,255,.25);">Não: <span>vendedor</span></div>
+    </div>
+    <div class="voice-trait" style="background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.07);">
+      <div class="voice-trait-icon">🎯</div>
+      <div class="voice-trait-name" style="color:white;">Confiante</div>
+      <div class="voice-trait-anti" style="color:rgba(255,255,255,.25);">Não: <span>arrogante</span></div>
+    </div>
+  </div>
+
+  <div class="voice-grid mt-10">
+    <div class="voice-card">
+      <div class="voice-card-head do">
+        <span class="voice-indicator do">✓ Use isso</span>
+      </div>
+      <div class="voice-card-body">
+        <div class="voice-example">"Entregamos APIs que processam 50k req/s. Sem mágica — arquitetura sólida e código testado."</div>
+        <div class="voice-reason">Específico, verificável, sem exagero. Mostra competência através de dado concreto.</div>
+      </div>
+    </div>
+    <div class="voice-card">
+      <div class="voice-card-head dont">
+        <span class="voice-indicator dont">✕ Evite isso</span>
+      </div>
+      <div class="voice-card-body">
+        <div class="voice-example">"Somos apaixonados por inovação e entregamos soluções digitais de alta performance para o seu negócio."</div>
+        <div class="voice-reason">Genérico, vazio, poderia ser de qualquer empresa. Não diz nada de real.</div>
+      </div>
+    </div>
+    <div class="voice-card">
+      <div class="voice-card-head do">
+        <span class="voice-indicator do">✓ Use isso</span>
+      </div>
+      <div class="voice-card-body">
+        <div class="voice-example">"Projeto tem bug crítico no checkout. Corrijo em 4h ou é de graça."</div>
+        <div class="voice-reason">Comprometimento real, prazo específico, accountability. Isso cria confiança.</div>
+      </div>
+    </div>
+    <div class="voice-card">
+      <div class="voice-card-head dont">
+        <span class="voice-indicator dont">✕ Evite isso</span>
+      </div>
+      <div class="voice-card-body">
+        <div class="voice-example">"Vamos analisar a situação e alinhar as expectativas para encontrar a melhor solução possível."</div>
+        <div class="voice-reason">Corporativês sem substância. Fuga de responsabilidade disfarçada de profissionalismo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     09 — APLICAÇÕES
+════════════════════════════════════════════ -->
+<section class="ds-section" id="aplicacoes">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">09 — Aplicações</div>
+      <h2 class="section-title">Brand in the Wild</h2>
+      <p class="section-desc">A identidade em contextos reais de uso.</p>
+    </div>
+  </div>
+
+  <div class="applications-grid">
+
+    <!-- Cartão de visita -->
+    <div class="app-cell dark">
+      <div class="app-cell-label">Cartão de Visita · 85×54mm</div>
+      <div style="display:flex;justify-content:center;">
+        <div class="biz-card">
+          <div class="biz-card-top">
+            <div>
+              <div class="biz-card-name">evandro<span>.dev.br</span></div>
+              <div class="biz-card-role">FULL-STACK DEVELOPMENT</div>
+            </div>
+            <svg width="36" height="28" viewBox="0 0 120 80" fill="none">
+              <rect x="10" y="8" width="9" height="64" fill="white"/>
+              <rect x="19" y="8" width="28" height="9" fill="white"/>
+              <rect x="19" y="35.5" width="22" height="9" fill="white"/>
+              <rect x="19" y="63" width="28" height="9" fill="white"/>
+              <polygon points="50,55 57,55 74,25 67,25" fill="#E8FF00"/>
+              <circle cx="80" cy="63" r="7" fill="white"/>
+            </svg>
+          </div>
+          <div class="biz-card-bottom">
+            <div class="biz-card-info">
+              evandro.dev.br<br>
+              <a>contato@evandro.dev.br</a><br>
+              github.com/evandro
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GitHub Banner — full width -->
+    <div class="gh-banner-wrapper">
+      <div class="app-cell-label">GitHub Profile Banner · 1280×640px</div>
+      <div class="gh-banner">
+        <!-- decoração -->
+        <div class="gh-banner-circle-1"></div>
+        <div class="gh-banner-circle-2"></div>
+
+        <!-- topo -->
+        <div class="gh-banner-top">
+          <div>
+            <div class="gh-banner-eyebrow">Full-Stack Developer · Santa Catarina, BR</div>
+            <div class="gh-banner-name">
+              evandro<span class="slash-col">.</span>dev<span class="slash-col">.</span>br
+            </div>
+          </div>
+          <!-- logo watermark grande -->
+          <div class="gh-banner-logo-mark">
+            <svg viewBox="0 0 280 200" fill="none" style="width:clamp(80px,14%,180px);height:auto;">
+              <rect x="42" y="36" width="22" height="128" fill="white"/>
+              <rect x="64" y="36" width="68" height="22" fill="white"/>
+              <rect x="64" y="89" width="52" height="22" fill="white"/>
+              <rect x="64" y="142" width="68" height="22" fill="white"/>
+              <polygon points="142,136 158,136 196,64 180,64" fill="#E8FF00"/>
+              <circle cx="214" cy="148" r="14" fill="white"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- rodapé -->
+        <div class="gh-banner-bottom">
+          <div class="gh-banner-stack">
+            <span class="gh-banner-tag accent">TypeScript</span>
+            <span class="gh-banner-tag accent">React</span>
+            <span class="gh-banner-tag accent">Next.js</span>
+            <span class="gh-banner-tag">Node.js</span>
+            <span class="gh-banner-tag">PostgreSQL</span>
+            <span class="gh-banner-tag">Docker</span>
+            <span class="gh-banner-tag">AWS</span>
+          </div>
+          <div class="gh-banner-stats">
+            <div class="gh-banner-stat">
+              <div class="gh-banner-stat-val">8<span>+</span></div>
+              <div class="gh-banner-stat-key">Anos</div>
+            </div>
+            <div class="gh-banner-stat">
+              <div class="gh-banner-stat-val">40<span>+</span></div>
+              <div class="gh-banner-stat-key">Projetos</div>
+            </div>
+            <div class="gh-banner-stat">
+              <div class="gh-banner-stat-val">100<span>%</span></div>
+              <div class="gh-banner-stat-key">Commit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email signature -->
+    <div class="app-cell">
+      <div class="app-cell-label">Assinatura de Email</div>
+      <div class="email-sig">
+        <div class="email-sig-body">
+          <svg width="32" height="26" viewBox="0 0 120 80" fill="none">
+            <rect x="10" y="8" width="9" height="64" fill="#0A0A0A"/>
+            <rect x="19" y="8" width="28" height="9" fill="#0A0A0A"/>
+            <rect x="19" y="35.5" width="22" height="9" fill="#0A0A0A"/>
+            <rect x="19" y="63" width="28" height="9" fill="#0A0A0A"/>
+            <polygon points="50,55 57,55 74,25 67,25" fill="#E8FF00"/>
+            <circle cx="80" cy="63" r="7" fill="#0A0A0A"/>
+          </svg>
+          <div class="email-sig-divider"></div>
+          <div class="email-sig-info">
+            <div class="email-sig-name">Evandro</div>
+            <div class="email-sig-role">Full-Stack Developer · evandro.dev.br</div>
+            <div class="email-sig-links">
+              <a href="#">contato@evandro.dev.br</a><br>
+              <a href="#">evandro.dev.br</a> · <a href="#">github.com/evandro</a>
+            </div>
+          </div>
+        </div>
+        <div class="email-sig-footer">DESENVOLVIMENTO DE SOFTWARE · SANTA CATARINA, BR</div>
+      </div>
+    </div>
+
+    <!-- Favicons -->
+    <div class="app-cell dark">
+      <div class="app-cell-label">Favicon & App Icons</div>
+      <div class="favicon-grid">
+        <div class="favicon-item">
+          <div class="favicon-box" style="width:180px;height:180px;border-radius:40px;">
+            <svg width="120" height="80" viewBox="0 0 120 80" fill="none">
+              <rect x="10" y="8" width="9" height="64" fill="white"/>
+              <rect x="19" y="8" width="28" height="9" fill="white"/>
+              <rect x="19" y="35.5" width="22" height="9" fill="white"/>
+              <rect x="19" y="63" width="28" height="9" fill="white"/>
+              <polygon points="50,55 57,55 74,25 67,25" fill="#E8FF00"/>
+              <circle cx="80" cy="63" r="7" fill="white"/>
+            </svg>
+          </div>
+          <span class="favicon-size" style="color:rgba(255,255,255,.3);">App Store · 180px</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start;justify-content:flex-end;">
+          <div class="favicon-item">
+            <div class="favicon-box" style="width:64px;height:64px;border-radius:14px;">
+              <svg width="42" height="28" viewBox="0 0 120 80" fill="none">
+                <rect x="10" y="8" width="9" height="64" fill="white"/>
+                <rect x="19" y="8" width="28" height="9" fill="white"/>
+                <rect x="19" y="35.5" width="22" height="9" fill="white"/>
+                <rect x="19" y="63" width="28" height="9" fill="white"/>
+                <polygon points="50,55 57,55 74,25 67,25" fill="#E8FF00"/>
+                <circle cx="80" cy="63" r="7" fill="white"/>
+              </svg>
+            </div>
+            <span class="favicon-size" style="color:rgba(255,255,255,.3);">64px</span>
+          </div>
+          <div class="favicon-item">
+            <div class="favicon-box" style="width:32px;height:32px;border-radius:7px;">
+              <svg width="22" height="14" viewBox="0 0 120 80" fill="none">
+                <rect x="10" y="8" width="9" height="64" fill="white"/>
+                <rect x="19" y="8" width="28" height="9" fill="white"/>
+                <rect x="19" y="35.5" width="22" height="9" fill="white"/>
+                <rect x="19" y="63" width="28" height="9" fill="white"/>
+                <polygon points="50,55 57,55 74,25 67,25" fill="#E8FF00"/>
+                <circle cx="80" cy="63" r="7" fill="white"/>
+              </svg>
+            </div>
+            <span class="favicon-size" style="color:rgba(255,255,255,.3);">32px</span>
+          </div>
+          <div class="favicon-item">
+            <div class="favicon-box" style="width:16px;height:16px;border-radius:4px;">
+              <svg width="11" height="8" viewBox="0 0 120 80" fill="none">
+                <rect x="10" y="8" width="9" height="64" fill="white"/>
+                <rect x="19" y="8" width="28" height="9" fill="white"/>
+                <rect x="19" y="35.5" width="22" height="9" fill="white"/>
+                <rect x="19" y="63" width="28" height="9" fill="white"/>
+                <polygon points="50,55 57,55 74,25 67,25" fill="#E8FF00"/>
+                <circle cx="80" cy="63" r="7" fill="white"/>
+              </svg>
+            </div>
+            <span class="favicon-size" style="color:rgba(255,255,255,.3);">16px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer style="background:var(--ink);padding:var(--sp-16);display:grid;grid-template-columns:1fr auto;align-items:end;gap:var(--sp-8);border-top:1px solid rgba(255,255,255,.04);">
+  <div>
+    <div style="display:flex;align-items:center;gap:var(--sp-4);margin-bottom:var(--sp-4);">
+      <svg width="40" height="28" viewBox="0 0 120 80" fill="none">
+        <rect x="10" y="8" width="9" height="64" fill="white"/>
+        <rect x="19" y="8" width="28" height="9" fill="white"/>
+        <rect x="19" y="35.5" width="22" height="9" fill="white"/>
+        <rect x="19" y="63" width="28" height="9" fill="white"/>
+        <polygon points="50,55 57,55 74,25 67,25" fill="#E8FF00"/>
+        <circle cx="80" cy="63" r="7" fill="white"/>
+      </svg>
+      <span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:white;letter-spacing:-0.02em;">evandro<span style="color:#E8FF00;">.dev.br</span></span>
+    </div>
+    <p style="font-size:10px;color:rgba(255,255,255,.2);line-height:1.8;max-width:400px;">
+      Design System v1.0 · Logo: Slash Mark (Conceito D) · Tipografia: Syne + Geist Mono<br>
+      Construído para durar. Cada pixel tem justificativa.
+    </p>
+  </div>
+  <div style="text-align:right;">
+    <div style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.15);line-height:2.2;">
+      Cores<br>Tipografia<br>Spacing<br>Componentes<br>Motion<br>Aplicações
+    </div>
+  </div>
+</footer>
+
+</main>
+</body>
+</html>
