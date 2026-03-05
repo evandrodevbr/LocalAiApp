@@ -28,7 +28,8 @@ export function useLMStudio() {
 
     const fetchModels = useCallback(async () => {
         try {
-            const models = await api.getModels(serverConfig);
+            const currentConfig = useAppStore.getState().serverConfig;
+            const models = await api.getModels(currentConfig);
             setAvailableModels(models);
             setIsConnected(true);
 
@@ -41,7 +42,7 @@ export function useLMStudio() {
             setAvailableModels([]);
             return [];
         }
-    }, [serverConfig, activeModelId, setAvailableModels, setIsConnected, setActiveModelId]);
+    }, [activeModelId, setAvailableModels, setIsConnected, setActiveModelId]);
 
     const sendMessage = useCallback(async (text: string) => {
         if (isStreaming) return;
@@ -80,18 +81,21 @@ export function useLMStudio() {
                 () => {
                     setIsStreaming(false);
                     abortRef.current = null;
+                    useAppStore.getState().saveCurrentChat();
                 },
                 (error) => {
                     const errorMsg = `\n\n⚠️ Error: ${error.message}`;
                     appendToMessage(assistantId, errorMsg);
                     setIsStreaming(false);
                     abortRef.current = null;
+                    useAppStore.getState().saveCurrentChat();
                 },
             );
         } catch (err) {
             const errorMsg = `⚠️ Connection failed: ${(err as Error).message}`;
             appendToMessage(assistantId, errorMsg);
             setIsStreaming(false);
+            useAppStore.getState().saveCurrentChat();
         }
     }, [isStreaming, serverConfig, addMessage, appendToMessage, setIsStreaming]);
 
@@ -136,16 +140,22 @@ export function useLMStudio() {
                 modelId,
                 apiMessages,
                 (chunk) => appendToMessage(assistantId, chunk),
-                () => { setIsStreaming(false); abortRef.current = null; },
+                () => {
+                    setIsStreaming(false);
+                    abortRef.current = null;
+                    useAppStore.getState().saveCurrentChat();
+                },
                 (error) => {
                     appendToMessage(assistantId, `\n\n⚠️ Error: ${error.message}`);
                     setIsStreaming(false);
                     abortRef.current = null;
+                    useAppStore.getState().saveCurrentChat();
                 },
             );
         } catch (err) {
             appendToMessage(assistantId, `⚠️ Connection failed: ${(err as Error).message}`);
             setIsStreaming(false);
+            useAppStore.getState().saveCurrentChat();
         }
     }, [isStreaming, serverConfig, addMessage, appendToMessage, setIsStreaming]);
 

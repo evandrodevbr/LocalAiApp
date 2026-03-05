@@ -2,7 +2,7 @@ import { ModelSelector } from '@/components/chat/ModelSelector';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { useAppStore } from '@/store/useAppStore';
 import { Stack, useRouter } from 'expo-router';
-import { Plus, Settings } from 'lucide-react-native';
+import { History, Plus, Settings } from 'lucide-react-native';
 import { Platform, StyleSheet, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 
 export default function ChatLayout() {
@@ -33,13 +33,22 @@ export default function ChatLayout() {
                             headerShadowVisible: false,
                             headerStyle: { backgroundColor: colors.backgroundColor },
                             headerLeft: () => (
-                                <TouchableOpacity
-                                    onPress={clearChat}
-                                    style={[styles.headerBtn, { backgroundColor: colors.cardBackground }]}
-                                    activeOpacity={0.7}
-                                >
-                                    <Plus size={22} color={colors.text} />
-                                </TouchableOpacity>
+                                <View style={{ flexDirection: 'row', gap: 8 }}>
+                                    <TouchableOpacity
+                                        onPress={() => router.push('/chat/history')}
+                                        style={[styles.headerBtn, { backgroundColor: colors.cardBackground }]}
+                                        activeOpacity={0.7}
+                                    >
+                                        <History size={22} color={colors.text} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={clearChat}
+                                        style={[styles.headerBtn, { backgroundColor: colors.cardBackground }]}
+                                        activeOpacity={0.7}
+                                    >
+                                        <Plus size={22} color={colors.text} />
+                                    </TouchableOpacity>
+                                </View>
                             ),
                             headerRight: () => (
                                 <TouchableOpacity
@@ -52,6 +61,7 @@ export default function ChatLayout() {
                             ),
                         }}
                     />
+                    <Stack.Screen name="history" options={{ headerShown: false, presentation: 'modal' }} />
                 </Stack>
             </View>
         </View>

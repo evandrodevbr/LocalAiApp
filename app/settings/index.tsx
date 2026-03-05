@@ -1,4 +1,5 @@
 import { ConnectionBadge } from '@/components/ui/ConnectionBadge';
+import { useLMStudio } from '@/hooks/useLMStudio';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import * as api from '@/services/lmStudioApi';
 import { ServerConfig } from '@/services/types';
@@ -28,6 +29,7 @@ export default function SettingsScreen() {
     const setServerConfig = useAppStore(state => state.setServerConfig);
     const isConnected = useAppStore(state => state.isConnected);
     const setIsConnected = useAppStore(state => state.setIsConnected);
+    const { fetchModels } = useLMStudio();
 
     // Local State
     const [host, setHost] = useState(serverConfig.host);
@@ -59,6 +61,9 @@ export default function SettingsScreen() {
         const ok = await api.testConnection(currentConfig);
         setTestResult(ok);
         setIsConnected(ok);
+        if (ok) {
+            await fetchModels();
+        }
         setIsTesting(false);
     };
 
